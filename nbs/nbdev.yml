@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "aishiftscheduler"
+  site-url: "https://LearnableLoopAI.github.io/aishiftscheduler"
+  description: "AI Shift Scheduler"
+  repo-branch: main
+  repo-url: "https://github.com/LearnableLoopAI/aishiftscheduler"
