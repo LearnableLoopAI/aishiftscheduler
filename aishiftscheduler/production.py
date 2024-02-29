@@ -31,15 +31,15 @@ from PIL import Image
 import aishiftscheduler.utils as utl
 from fastapi import FastAPI
 
-# %% ../nbs/10_production.ipynb 10
+# %% ../nbs/10_production.ipynb 11
 app = FastAPI()
 
-# %% ../nbs/10_production.ipynb 11
+# %% ../nbs/10_production.ipynb 12
 @app.get("/")
 def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello Oupa ..."}
 
-# %% ../nbs/10_production.ipynb 12
+# %% ../nbs/10_production.ipynb 13
 # Update the Parameters instance, `Pars` with the latest user input.
 # def update_parameters_from_user_input(
 def update_parameters_from_user(
@@ -179,7 +179,7 @@ def update_parameters_from_user(
   print(f'{pars.abNAMES=}')
   pars.LABELS = pars.setup_plot_labels()
 
-# %% ../nbs/10_production.ipynb 13
+# %% ../nbs/10_production.ipynb 14
 def prepare_schedule(pars):
     start = time.time()
     if 'TRAIN' in cf.MODES:
@@ -244,65 +244,7 @@ def prepare_schedule(pars):
         # utl.print_schedule_slots(inf_Df_evalu_opt, Pars)
     end = time.time(); print(f'EXECUTION TIME: {end - start} seconds')
 
-# %% ../nbs/10_production.ipynb 16
+# %% ../nbs/10_production.ipynb 17
 # Create a Parameter instance & initialize with default pars.
 # The `Pars` instance will be passed between various modules
 Pars = par.Parameters()
-
-# %% ../nbs/10_production.ipynb 18
-# Update the Parameters instance, `Pars` with the latest user input.
-# For now, values will be hardcoded here. Eventually, they will be
-# ready from the data store, presented to the user for optional
-# adjustments, and then used to update the `Pars` instance.
-update_parameters_from_user(
-    Pars,
-    start='2023-12-04', #2023-12-11
-    slots_per_day=24, #24 
-    max_daily_slot_run=11, #8
-    resources = 'Manager: Matt; AssistMngr: Mike, Tanner; RetailAssoc: Jake, James, Jane, John, Jim, Jenny, Jeremy, Judy, Julie, Jeffrey',
-    # resources = 'Manager: Matt; AssistMngr: Mike, Tanner; RetailAssoc: Jake, James, Jane, John, Jim, Jenny, Jeremy, Judy, Julie',
-    # resources = 'Manager: John, Penelope; SalesPerson: Sally, Sarah, Jim, Costa',
-    # resources = 'SupChief: Ruan, Francine; Sup: Azra, Wendie, Penny, Sally',
-    # resources = 'ChiefTeller: Ruan, Francine; Teller: Azra, Wendie, Penny, Sally',
-    
-    # demands_per_busyness = '.2, 4',
-    demands_per_busyness = '0.005, 0.008, 0.02',
-    
-    # demands_per_volume = '.02, .4',
-    demands_per_volume = '0.03, 0.08, 0.2',
-    
-    # demands_per_revenue = '.05, .8',
-    demands_per_revenue = '.00005, 0.0001, 0.0008',
-    
-    # resource_expenses = '35.17, 23.85'
-    resource_expenses = '25.0, 20.0, 18.0'
-)
-
-# %% ../nbs/10_production.ipynb 20
-# Update the Parameters instance, `Pars` with the latest user input.
-update_parameters_from_user(
-    Pars,
-    start='2023-12-04', #2023-12-11
-    slots_per_day=24, #24 
-    max_daily_slot_run=11, #8
-    resources = 'Manager: Matt; AssistMngr: Mike, Tanner; RetailAssoc: Jake, James, Jane, John, Jim, Jenny, Jeremy, Judy, Julie, Jeffrey',
-    # resources = 'Manager: Matt; AssistMngr: Mike, Tanner; RetailAssoc: Jake, James, Jane, John, Jim, Jenny, Jeremy, Judy, Julie',
-    # resources = 'Manager: John, Penelope; SalesPerson: Sally, Sarah, Jim, Costa',
-    # resources = 'SupChief: Ruan, Francine; Sup: Azra, Wendie, Penny, Sally',
-    # resources = 'ChiefTeller: Ruan, Francine; Teller: Azra, Wendie, Penny, Sally',
-    
-    # demands_per_busyness = '.2, 4',
-    demands_per_busyness = '0.005, 0.008, 0.02',
-    
-    # demands_per_volume = '.02, .4',
-    demands_per_volume = '0.03, 0.08, 0.2',
-    
-    # demands_per_revenue = '.05, .8',
-    demands_per_revenue = '.00005, 0.0001, 0.0008',
-    
-    # resource_expenses = '35.17, 23.85'
-    resource_expenses = '25.0, 20.0, 18.0'
-)
-
-# %% ../nbs/10_production.ipynb 22
-prepare_schedule(Pars)
