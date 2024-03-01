@@ -6,7 +6,7 @@ __all__ = ['load_sick_probs', 'load_merit_probs', 'load_exog_info']
 # %% ../nbs/01_loader.ipynb 4
 import pandas as pd
 
-# %% ../nbs/01_loader.ipynb 7
+# %% ../nbs/01_loader.ipynb 5
 def load_sick_probs(filename):
   sick_df = pd.read_excel(
       filename,
@@ -16,7 +16,7 @@ def load_sick_probs(filename):
       )
   return sick_df
 
-# %% ../nbs/01_loader.ipynb 8
+# %% ../nbs/01_loader.ipynb 6
 def load_merit_probs(filename):
   merit_df = pd.read_excel(
       filename,
@@ -26,7 +26,7 @@ def load_merit_probs(filename):
       )
   return merit_df
 
-# %% ../nbs/01_loader.ipynb 9
+# %% ../nbs/01_loader.ipynb 7
 def load_exog_info(filename):
   exog_info_df = pd.read_excel(
     filename,

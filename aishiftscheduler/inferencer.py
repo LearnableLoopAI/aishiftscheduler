@@ -20,8 +20,9 @@ import time
 import aishiftscheduler.config as cf
 import aishiftscheduler.model as mod
 import aishiftscheduler.policy as pol
+import aishiftscheduler.utils as utl
 
-# %% ../nbs/09_inferencer.ipynb 9
+# %% ../nbs/09_inferencer.ipynb 6
 def get_best_theta_Alloc():
   best_theta_Alloc = \
     pol.Policy(None).build_theta({
@@ -33,7 +34,7 @@ def get_best_theta_Alloc():
     })
   return best_theta_Alloc
 
-# %% ../nbs/09_inferencer.ipynb 10
+# %% ../nbs/09_inferencer.ipynb 7
 def do_infer(L, T, best_theta_Alloc, pars):
   M = mod.Model(pars)
   P = pol.Policy(M)
@@ -45,7 +46,7 @@ def do_infer(L, T, best_theta_Alloc, pars):
   return \
     P.perform_grid_search_sample_paths('X__Alloc', thetasOpt, L, T, pars)
 
-# %% ../nbs/09_inferencer.ipynb 11
+# %% ../nbs/09_inferencer.ipynb 8
 from io import StringIO
 def prepare_schedule_shifts(df, buf, pars):
   mask = df.columns.str.contains('Allocd_t')
@@ -84,10 +85,10 @@ def prepare_schedule_shifts(df, buf, pars):
   buf.write(f'{cf.TH_Select_SPEC=}\n')
   return buf.getvalue()
 
-# %% ../nbs/09_inferencer.ipynb 12
+# %% ../nbs/09_inferencer.ipynb 9
 from io import StringIO
 def prepare_schedule_slots(df, buf):
-  gap_mins = gap_minutes(cf.RESOLUTION)
+  gap_mins = utl.gap_minutes(cf.RESOLUTION)
   mask = df.columns.str.contains('Allocd_t')
   resource_allocs = list(df.columns[mask])
   sched = copy(df)
@@ -129,7 +130,7 @@ def prepare_schedule_slots(df, buf):
   buf.write(f'{cf.TH_Select_SPEC=}\n')
   return buf.getvalue()
 
-# %% ../nbs/09_inferencer.ipynb 13
+# %% ../nbs/09_inferencer.ipynb 10
 def infer_schedule(L, T, First_n_t, stored_best_theta, pars):
     start = time.time()
     

@@ -22,13 +22,13 @@ from fastcore.basics import patch
 import aishiftscheduler.config as cf
 import aishiftscheduler.model as mod
 
-# %% ../nbs/05_policy.ipynb 10
+# %% ../nbs/05_policy.ipynb 8
 pd.options.display.float_format = '{:,.4f}'.format
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_colwidth', None)
 
-# %% ../nbs/05_policy.ipynb 15
+# %% ../nbs/05_policy.ipynb 13
 @ray.remote
 def parallel_run_grid_sample_paths(policy, theta, piName, L, T, pars):
 # def parallel_run_grid_sample_paths(pol, theta, piName):    
@@ -61,27 +61,27 @@ def parallel_run_grid_sample_paths(policy, theta, piName, L, T, pars):
         CcumIomega__lI.append(policy.model.Ccum) ##just above (SDAM-eq2.9)
     return (CcumIomega__lI, record)
 
-# %% ../nbs/05_policy.ipynb 16
+# %% ../nbs/05_policy.ipynb 14
 class Policy(): pass
 
-# %% ../nbs/05_policy.ipynb 17
+# %% ../nbs/05_policy.ipynb 15
 @patch
 def __init__(self:Policy, model):
     self.model = model
     self.Policy = namedtuple('Policy', cf.piNAMES) ## 'class'
     self.Theta = namedtuple('Theta', cf.thNAMES) ## 'class'
 
-# %% ../nbs/05_policy.ipynb 18
+# %% ../nbs/05_policy.ipynb 16
 @patch
 def build_policy(self:Policy, info):
     return self.Policy(*[info[pin] for pin in cf.piNAMES])
 
-# %% ../nbs/05_policy.ipynb 19
+# %% ../nbs/05_policy.ipynb 17
 @patch
 def build_theta(self:Policy, info):
     return self.Theta(*[info[thn] for thn in cf.thNAMES])
 
-# %% ../nbs/05_policy.ipynb 20
+# %% ../nbs/05_policy.ipynb 18
 @patch
 def X__Alloc(self:Policy, t, dt, S_t, x_t, theta, pars):
     ## print(f"\n..... Policy.X__Alloc() .....\n{t=}, {dt=}")
@@ -151,7 +151,7 @@ def X__Alloc(self:Policy, t, dt, S_t, x_t, theta, pars):
         ] = False
       ## print(f"x_t['xAlloc_t']:\n{x_t['xAlloc_t']}")
 
-# %% ../nbs/05_policy.ipynb 21
+# %% ../nbs/05_policy.ipynb 19
 @patch
 def run_grid_sample_paths(self:Policy, theta, piName, record, L, T, pars):
 # def run_grid_sample_paths(self:Policy, theta, piName, record): !!!!!!!!!!!!!!!!!!!!!!!    
@@ -183,7 +183,7 @@ def run_grid_sample_paths(self:Policy, theta, piName, record, L, T, pars):
       CcumIomega__lI.append(self.model.Ccum) ##just above (SDAM-eq2.9)
     return CcumIomega__lI
 
-# %% ../nbs/05_policy.ipynb 22
+# %% ../nbs/05_policy.ipynb 20
 @patch
 def perform_grid_search_sample_paths(self:Policy, piName, thetas, L, T, pars):
 # def perform_grid_search_sample_paths(self:Policy, piName, thetas): !!!!!!!!!!!!!!!!!!!    
@@ -260,7 +260,7 @@ def perform_grid_search_sample_paths(self:Policy, piName, thetas, L, T, pars):
       best_Ctilcum, worst_Ctilcum, \
       record
 
-# %% ../nbs/05_policy.ipynb 24
+# %% ../nbs/05_policy.ipynb 22
 @patch
 def parallel_perform_grid_search_sample_paths(self:Policy, piName, thetas, L, T, pars):
 # def parallel_perform_grid_search_sample_paths(self:Policy, piName, thetas):    

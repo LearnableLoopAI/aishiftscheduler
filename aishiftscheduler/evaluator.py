@@ -27,7 +27,7 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_colwidth', None)
 
-# %% ../nbs/08_evaluator.ipynb 9
+# %% ../nbs/08_evaluator.ipynb 8
 def do_evalu_opt(L, T, Best_theta_Alloc, pars):
   M = mod.Model(pars)
   P = pol.Policy(M)
@@ -38,7 +38,7 @@ def do_evalu_opt(L, T, Best_theta_Alloc, pars):
   return \
     P.perform_grid_search_sample_paths('X__Alloc', thetasOpt, L, T, pars)
 
-# %% ../nbs/08_evaluator.ipynb 10
+# %% ../nbs/08_evaluator.ipynb 9
 def do_evalu_non(L, T, Worst_theta_Alloc, pars):
   M = mod.Model(pars)
   P = pol.Policy(M)
@@ -54,7 +54,7 @@ def do_evalu_non(L, T, Worst_theta_Alloc, pars):
   return \
     P.perform_grid_search_sample_paths('X__Alloc', thetasNon, L, T, pars)
 
-# %% ../nbs/08_evaluator.ipynb 11
+# %% ../nbs/08_evaluator.ipynb 10
 def evalu_schedule_opt(L, T, First_n_t, trn_Best_theta, pars):
     start = time.time()
 
@@ -72,7 +72,7 @@ def evalu_schedule_opt(L, T, First_n_t, trn_Best_theta, pars):
     end = time.time(); print(f'EXECUTION TIME: {end - start} seconds')
     return Best_theta_evalu_opt, Worst_theta_evalu_opt, Df_evalu_opt
 
-# %% ../nbs/08_evaluator.ipynb 12
+# %% ../nbs/08_evaluator.ipynb 11
 def evalu_schedule_non(L, T, First_n_t, trn_Worst_theta, pars):
     start = time.time()
 

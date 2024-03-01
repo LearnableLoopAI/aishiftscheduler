@@ -21,16 +21,16 @@ import aishiftscheduler.config as cf
 # import aishiftscheduler.policy as pol
 import aishiftscheduler.visualization as vis
 
-# %% ../nbs/04_model.ipynb 9
+# %% ../nbs/04_model.ipynb 7
 pd.options.display.float_format = '{:,.4f}'.format
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_colwidth', None)
 
-# %% ../nbs/04_model.ipynb 28
+# %% ../nbs/04_model.ipynb 26
 class Model(): pass
 
-# %% ../nbs/04_model.ipynb 29
+# %% ../nbs/04_model.ipynb 27
 @patch
 def __init__(self:Model, pars, W_fn=None, S__M_fn=None, C_fn=None):
     self.params = pars
@@ -97,7 +97,7 @@ def __init__(self:Model, pars, W_fn=None, S__M_fn=None, C_fn=None):
     self.Ucum = {rt: 0 for rt in pars.RESOURCE_TYPES}
     self.W_tt1 = {}
 
-# %% ../nbs/04_model.ipynb 32
+# %% ../nbs/04_model.ipynb 30
 @patch
 def W_fn(self:Model, t, dt): ## exogenous information
     return {
@@ -118,7 +118,7 @@ def W_fn(self:Model, t, dt): ## exogenous information
       'revenue': cf.EXOG_INFO.loc[cf.EXOG_INFO['Date'] == dt, 'revenue'].squeeze()
     }
 
-# %% ../nbs/04_model.ipynb 36
+# %% ../nbs/04_model.ipynb 34
 @patch
 def update_Ccum(self:Model, t, dt, S_t, x_t, theta):
     ## dow, hod = ((t + 1)//24)%7, (t + 1)%24; ##print(f'{dow=}, {hod=}')
@@ -187,7 +187,7 @@ def update_Ccum(self:Model, t, dt, S_t, x_t, theta):
     ## real revenue or forecast
     self.Ccum += self.W_tt1['revenue']
 
-# %% ../nbs/04_model.ipynb 43
+# %% ../nbs/04_model.ipynb 41
 @patch
 def performAllocDecision(self:Model, S_t, x_t, theta):
     ## find list of ResourceIds for allocs from x_t
@@ -210,7 +210,7 @@ def performAllocDecision(self:Model, S_t, x_t, theta):
     ## update Ccum with allocations
     ## self.Ccum += len(resourceIds_flat) #number of allocations
 
-# %% ../nbs/04_model.ipynb 44
+# %% ../nbs/04_model.ipynb 42
 @patch
 def S__M_fn(self:Model, t, dt, S_t, x_t, W_tt1, theta):
     ## dow, hod = ((t + 1)//24)%7, (t + 1)%24; ##print(f'{dow=}, {hod=}')
@@ -328,12 +328,12 @@ def S__M_fn(self:Model, t, dt, S_t, x_t, W_tt1, theta):
       list(x_t['xAlloc_t']['Allocd_t'])
     return record_t
 
-# %% ../nbs/04_model.ipynb 45
+# %% ../nbs/04_model.ipynb 43
 @patch
 def C_fn(self:Model, S_t, x_t, W_tt1, theta):
     return
 
-# %% ../nbs/04_model.ipynb 46
+# %% ../nbs/04_model.ipynb 44
 @patch
 def step(self:Model, t, dt, theta):
     ## IND = '\t\t'

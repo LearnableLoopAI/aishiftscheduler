@@ -21,13 +21,13 @@ import aishiftscheduler.config as cf
 import aishiftscheduler.model as mod
 import aishiftscheduler.policy as pol
 
-# %% ../nbs/07_trainer.ipynb 9
+# %% ../nbs/07_trainer.ipynb 7
 pd.options.display.float_format = '{:,.4f}'.format
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_colwidth', None)
 
-# %% ../nbs/07_trainer.ipynb 11
+# %% ../nbs/07_trainer.ipynb 8
 def setup_thetas_for_training():
     # Setup the training thetas.
     ThetasCumSlots = np.arange(cf.TH_CumSlots_SPEC[0], cf.TH_CumSlots_SPEC[1], cf.TH_CumSlots_SPEC[2])
@@ -65,7 +65,7 @@ def setup_thetas_for_training():
     ]
     return Thetas
 
-# %% ../nbs/07_trainer.ipynb 12
+# %% ../nbs/07_trainer.ipynb 9
 def do_train(L, T, Thetas, pars):
   M = mod.Model(pars)
   P = pol.Policy(M)
@@ -75,7 +75,7 @@ def do_train(L, T, Thetas, pars):
   return \
     P.parallel_perform_grid_search_sample_paths('X__Alloc', Thetas, L, T, pars)
 
-# %% ../nbs/07_trainer.ipynb 13
+# %% ../nbs/07_trainer.ipynb 10
 def train_schedule(L, T, First_n_t, Last_n_t, pars):
     start = time.time()
     ray.shutdown()

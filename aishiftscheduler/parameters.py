@@ -21,16 +21,16 @@ import aishiftscheduler.config as cf
 # import aishiftscheduler.policy as pol
 # import aishiftscheduler.visualization as vis
 
-# %% ../nbs/11_parameters.ipynb 9
+# %% ../nbs/11_parameters.ipynb 7
 pd.options.display.float_format = '{:,.4f}'.format
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_colwidth', None)
 
-# %% ../nbs/11_parameters.ipynb 14
+# %% ../nbs/11_parameters.ipynb 12
 class Parameters(): pass
 
-# %% ../nbs/11_parameters.ipynb 15
+# %% ../nbs/11_parameters.ipynb 13
 @patch
 def __init__(self:Parameters, W_fn=None, S__M_fn=None, C_fn=None):
     self.START_DATE_TIME = '2023-12-04'
@@ -132,7 +132,7 @@ def __init__(self:Parameters, W_fn=None, S__M_fn=None, C_fn=None):
 
     self.LABELS = self.setup_plot_labels()
 
-# %% ../nbs/11_parameters.ipynb 18
+# %% ../nbs/11_parameters.ipynb 16
 @patch
 def slots_per_day_and_date_time_delta(self:Parameters, resolution):
 # RESOLUTION = 'HOUR' ## 'BLOCK_8_HOUR', 'HOUR', 'QUARTER_HOUR', 
@@ -164,7 +164,7 @@ def slots_per_day_and_date_time_delta(self:Parameters, resolution):
       date_time_delta = 'error'    
     return slots_per_day, date_time_delta
 
-# %% ../nbs/11_parameters.ipynb 19
+# %% ../nbs/11_parameters.ipynb 17
 @patch
 def get_availabilities(self:Parameters, dt):
   avails = \
@@ -175,7 +175,7 @@ def get_availabilities(self:Parameters, dt):
   avails.reset_index(drop=True, inplace=True) ##to start index at 0
   return avails
 
-# %% ../nbs/11_parameters.ipynb 20
+# %% ../nbs/11_parameters.ipynb 18
 @patch
 def get_dow_qod_capacities(self:Parameters, dow):
   capacities = \
@@ -186,7 +186,7 @@ def get_dow_qod_capacities(self:Parameters, dow):
   capacities.reset_index(drop=True, inplace=True)
   return capacities
 
-# %% ../nbs/11_parameters.ipynb 21
+# %% ../nbs/11_parameters.ipynb 19
 @patch
 def get_dow_hod_capacities(self:Parameters, dow):
   capacities = \
@@ -198,7 +198,7 @@ def get_dow_hod_capacities(self:Parameters, dow):
   capacities.reset_index(drop=True, inplace=True)
   return capacities
 
-# %% ../nbs/11_parameters.ipynb 22
+# %% ../nbs/11_parameters.ipynb 20
 @patch
 def get_dow_bod_capacities(self:Parameters, dow):
   capacities = \
@@ -210,7 +210,7 @@ def get_dow_bod_capacities(self:Parameters, dow):
   capacities.reset_index(drop=True, inplace=True)
   return capacities
 
-# %% ../nbs/11_parameters.ipynb 23
+# %% ../nbs/11_parameters.ipynb 21
 @patch
 def get_capacities(self:Parameters, dow):
   if self.RESOLUTION == 'QUARTER_HOUR':
@@ -223,7 +223,7 @@ def get_capacities(self:Parameters, dow):
     print(f'ERROR: Invalid RESOLUTION: {self.RESOLUTION}')
     return None
 
-# %% ../nbs/11_parameters.ipynb 24
+# %% ../nbs/11_parameters.ipynb 22
 @patch
 def setup_plot_labels(self:Parameters):
     RAvail_t_labels = ['RAvail_t_'+an for an in self.aNAMES]
