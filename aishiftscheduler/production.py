@@ -50,37 +50,38 @@ def prepare_schedule(pars):
 
     if 'EVALU' in cf.MODES:
         print('############################## EVALU ##############################')
-        L = 2 #20 #5 #2 #2db #10pub
-        T = 7*pars.SLOTS_PER_DAY #=672
-        First_n_t = int(.11*L*T)
+        ## COMMENTED OUT TEMPORARILY FOR QUICKER TESTING
+        # L = 2 #20 #5 #2 #2db #10pub
+        # T = 7*pars.SLOTS_PER_DAY #=672
+        # First_n_t = int(.11*L*T)
         
-        evl_Best_theta_opt, evl_Worst_theta_opt, evl_Df_opt = \
-            evl.evalu_schedule_opt(L, T, First_n_t, trn_Best_theta, pars)
-        print(f'{evl_Best_theta_opt=}')
-        print(f'{evl_Df_opt.shape=}')
+        # evl_Best_theta_opt, evl_Worst_theta_opt, evl_Df_opt = \
+        #     evl.evalu_schedule_opt(L, T, First_n_t, trn_Best_theta, pars)
+        # print(f'{evl_Best_theta_opt=}')
+        # print(f'{evl_Df_opt.shape=}')
     
-        evl_Best_theta_non, evl_Worst_theta_non, evl_Df_non = \
-            evl.evalu_schedule_non(L, T, First_n_t, trn_Worst_theta, pars)
-        print(f'{evl_Best_theta_non=}')
-        print(f'{evl_Df_non.shape=}')
+        # evl_Best_theta_non, evl_Worst_theta_non, evl_Df_non = \
+        #     evl.evalu_schedule_non(L, T, First_n_t, trn_Worst_theta, pars)
+        # print(f'{evl_Best_theta_non=}')
+        # print(f'{evl_Df_non.shape=}')
 
-        ## single sample-path
-        L = 1 #20 #5 #2 #2db #10pub
-        T = 7*pars.SLOTS_PER_DAY #=672
-        First_n_t = int(1*L*T)
+        # ## single sample-path
+        # L = 1 #20 #5 #2 #2db #10pub
+        # T = 7*pars.SLOTS_PER_DAY #=672
+        # First_n_t = int(1*L*T)
         
-        evl_Best_theta_opt, evl_Worst_theta_opt, evl_Df_opt = \
-            evl.evalu_schedule_opt(L, T, First_n_t, trn_Best_theta, pars)
-        print(f'{evl_Best_theta_opt=}')
-        print(f'{evl_Df_opt.shape=}')
+        # evl_Best_theta_opt, evl_Worst_theta_opt, evl_Df_opt = \
+        #     evl.evalu_schedule_opt(L, T, First_n_t, trn_Best_theta, pars)
+        # print(f'{evl_Best_theta_opt=}')
+        # print(f'{evl_Df_opt.shape=}')
     
-        evl_Best_theta_non, evl_Worst_theta_non, evl_Df_non = \
-            evl.evalu_schedule_non(L, T, First_n_t, trn_Worst_theta, pars)
-        print(f'{evl_Best_theta_non=}')
-        print(f'{evl_Df_non.shape=}')
+        # evl_Best_theta_non, evl_Worst_theta_non, evl_Df_non = \
+        #     evl.evalu_schedule_non(L, T, First_n_t, trn_Worst_theta, pars)
+        # print(f'{evl_Best_theta_non=}')
+        # print(f'{evl_Df_non.shape=}')
 
-        print(evl_Df_opt[evl_Df_opt['t']==T-1][['Ccum']])
-        print(evl_Df_non[evl_Df_non['t']==T-1][['Ccum']])
+        # print(evl_Df_opt[evl_Df_opt['t']==T-1][['Ccum']])
+        # print(evl_Df_non[evl_Df_non['t']==T-1][['Ccum']])
         
     if 'INFER' in cf.MODES:
         print('############################## INFER ##############################')
@@ -94,9 +95,10 @@ def prepare_schedule(pars):
         print(f'{inf_Best_theta_evalu_opt=}')
         print(f'{inf_Df_evalu_opt.shape=}')
         # print(f'{prepped_sched=}')
-        # utl.print_schedule_shifts(inf_Df_evalu_opt, Pars)
-        # utl.print_schedule_slots(inf_Df_evalu_opt, Pars)
+        utl.print_schedule_shifts(inf_Df_evalu_opt, pars)
+        # utl.print_schedule_slots(inf_Df_evalu_opt, pars)
     end = time.time(); print(f'EXECUTION TIME: {end - start} seconds')
+    return prepped_sched
 
 # %% ../nbs/10_production.ipynb 14
 # Update the Parameters instance, `Pars` with the latest user input.
@@ -304,7 +306,7 @@ Pars = par.Parameters()
 @app.post("/schedule")
 def find_schedule(user_input: UserInput):
     update_parameters_from_user_input(Pars, user_input)
-    # sched = prepare_schedule(Pars)
-    prepare_schedule(Pars)
-    # return sched
-    return "works !!!!!!!!!!!!!!!!!!!!!!!!!"
+    sched = prepare_schedule(Pars)
+    # prepare_schedule(Pars)
+    return sched
+    # return "works !!!!!!!!!!!!!!!!!!!!!!!!!"
