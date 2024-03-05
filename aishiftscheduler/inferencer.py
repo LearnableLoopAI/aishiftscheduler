@@ -15,7 +15,7 @@ import aishiftscheduler.model as mod
 import aishiftscheduler.policy as pol
 import aishiftscheduler.utils as utl
 
-# %% ../nbs/09_inferencer.ipynb 7
+# %% ../nbs/09_inferencer.ipynb 6
 def do_infer(L, T, best_theta_Alloc, pars):
   M = mod.Model(pars)
   P = pol.Policy(M)
@@ -26,7 +26,7 @@ def do_infer(L, T, best_theta_Alloc, pars):
   return \
     P.perform_grid_search_sample_paths('X__Alloc', thetasOpt, L, T, pars)
 
-# %% ../nbs/09_inferencer.ipynb 8
+# %% ../nbs/09_inferencer.ipynb 7
 from io import StringIO
 def prepare_schedule_shifts_as_text(df, buf, pars):
   mask = df.columns.str.contains('Allocd_t')
@@ -65,7 +65,7 @@ def prepare_schedule_shifts_as_text(df, buf, pars):
   buf.write(f'{cf.TH_Select_SPEC=}\n')
   return buf.getvalue()
 
-# %% ../nbs/09_inferencer.ipynb 9
+# %% ../nbs/09_inferencer.ipynb 8
 from io import StringIO
 def prepare_schedule_slots_as_text(df, buf):
   gap_mins = utl.gap_minutes(cf.RESOLUTION)
@@ -110,7 +110,7 @@ def prepare_schedule_slots_as_text(df, buf):
   buf.write(f'{cf.TH_Select_SPEC=}\n')
   return buf.getvalue()
 
-# %% ../nbs/09_inferencer.ipynb 10
+# %% ../nbs/09_inferencer.ipynb 9
 def prepare_schedule_slots_as_json(df, pars):
   sched_dict = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
   gap_mins = utl.gap_minutes(pars.RESOLUTION)
@@ -152,7 +152,7 @@ def prepare_schedule_slots_as_json(df, pars):
   sched_dict['config']['TH_Select_SPEC'] = cf.TH_Select_SPEC
   return sched_dict
 
-# %% ../nbs/09_inferencer.ipynb 11
+# %% ../nbs/09_inferencer.ipynb 10
 def infer_schedule(L, T, First_n_t, stored_best_theta, pars):
     start = time.time()
     

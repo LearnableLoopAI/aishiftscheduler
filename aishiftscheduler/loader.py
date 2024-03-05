@@ -37,14 +37,14 @@ def load_exog_info(filename):
     )
   return exog_info_df
 
-# %% ../nbs/01_loader.ipynb 11
+# %% ../nbs/01_loader.ipynb 8
 def save_best_theta(filename, trn_Best_theta_df):
   trn_Best_theta_df.to_excel(
     filename,
     sheet_name='BestTheta',
   )
 
-# %% ../nbs/01_loader.ipynb 13
+# %% ../nbs/01_loader.ipynb 9
 def load_best_theta(filename):
   trn_Best_theta_df = pd.read_excel(
     filename,
