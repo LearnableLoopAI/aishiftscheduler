@@ -43,6 +43,15 @@ def prepare_schedule(pars):
         
         trn_Best_theta, trn_Worst_theta, trn_Df_first_n_t, trn_Df_last_n_t = \
             trn.train_schedule(L, T, First_n_t, Last_n_t, pars)
+        
+        trn_Best_theta_df = pd.DataFrame({
+            'thCumSlots': [trn_Best_theta[0]], 
+            'thSickProb': [trn_Best_theta[1]], 
+            'thCumMerits': [trn_Best_theta[2]], 
+            'thContSlots': [trn_Best_theta[3]],
+            'thSelect': [trn_Best_theta[4]]
+        })
+        ldr.save_best_theta(cf.PATH_best_theta_data, trn_Best_theta_df)
         print(f'{trn_Best_theta=}')
         print(f'{trn_Df_first_n_t.shape=}')
 
@@ -87,7 +96,16 @@ def prepare_schedule(pars):
         T = 7*pars.SLOTS_PER_DAY
         First_n_t = int(1*L*T)
     
-        stored_best_theta = inf.get_best_theta_Alloc()
+        # stored_best_theta = inf.get_best_theta_Alloc()
+        stored_best_theta_tuple = ldr.load_best_theta(cf.PATH_best_theta_data)
+        stored_best_theta = pol.Policy(None).build_theta({
+            'thCumSlots': stored_best_theta_tuple[0],
+            'thSickProb': stored_best_theta_tuple[1],
+            'thCumMerits': stored_best_theta_tuple[2],
+            'thContSlots': stored_best_theta_tuple[3],
+            'thSelect': stored_best_theta_tuple[4]
+            })
+        
         inf_Best_theta_evalu_opt, inf_Df_evalu_opt, prepped_sched = \
             inf.infer_schedule(L, T, First_n_t, stored_best_theta, pars)
         print(f'{inf_Best_theta_evalu_opt=}')
@@ -301,7 +319,7 @@ def get_default_user_input():
 # The `Pars` instance will be passed between various modules
 Pars = par.Parameters()
 
-# %% ../nbs/10_production.ipynb 19
+# %% ../nbs/10_production.ipynb 22
 @app.post("/schedule")
 def find_schedule(user_input: UserInput):
     error = update_parameters_from_user_input(Pars, user_input)
