@@ -26,14 +26,12 @@ import aishiftscheduler.inferencer as inf
 import aishiftscheduler.trainer as trn
 import aishiftscheduler.evaluator as evl
 import aishiftscheduler.parameters as par
-# from aishiftscheduler.core import print_schedule_shifts
-# from aishiftscheduler.core import print_schedule_slots
 from PIL import Image
 import aishiftscheduler.utils as utl
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-# %% ../nbs/10_production.ipynb 11
+# %% ../nbs/10_production.ipynb 10
 def prepare_schedule(pars):
     start = time.time()
     if 'TRAIN' in cf.MODES:
@@ -100,7 +98,7 @@ def prepare_schedule(pars):
     end = time.time(); print(f'EXECUTION TIME: {end - start} seconds')
     return prepped_sched
 
-# %% ../nbs/10_production.ipynb 14
+# %% ../nbs/10_production.ipynb 11
 # Update the Parameters instance, `Pars` with the latest user input.
 # def update_parameters_from_user_input(
 def update_parameters_from_user_input(pars, user_input):
@@ -113,7 +111,7 @@ def update_parameters_from_user_input(pars, user_input):
     # demands_per_volume, 
     # demands_per_revenue, 
     # resource_expenses):
-    
+  error = None 
   pars.START_DATE_TIME = user_input.start
   sd = pd.to_datetime(user_input.start)
   if not sd.strftime('%a')=='Mon':
@@ -239,8 +237,9 @@ def update_parameters_from_user_input(pars, user_input):
         pars.abNAMES.append(abn)
   print(f'{pars.abNAMES=}')
   pars.LABELS = pars.setup_plot_labels()
+  return error
 
-# %% ../nbs/10_production.ipynb 15
+# %% ../nbs/10_production.ipynb 12
 class UserInput(BaseModel):
     start: str
     slots_per_day: int
@@ -251,15 +250,15 @@ class UserInput(BaseModel):
     demands_per_revenue: str
     resource_expenses: str
 
-# %% ../nbs/10_production.ipynb 16
+# %% ../nbs/10_production.ipynb 14
 app = FastAPI()
 
-# %% ../nbs/10_production.ipynb 17
+# %% ../nbs/10_production.ipynb 15
 @app.get("/")
 def root():
     return {"message": "Hello Oupa ..."}
 
-# %% ../nbs/10_production.ipynb 18
+# %% ../nbs/10_production.ipynb 16
 dui = UserInput(
   start="2023-12-04", #2023-12-11
   slots_per_day=24,
@@ -283,7 +282,7 @@ dui = UserInput(
   resource_expenses="25.0, 20.0, 18.0"    
 )
 
-# %% ../nbs/10_production.ipynb 19
+# %% ../nbs/10_production.ipynb 17
 @app.get("/defaultuserinput")
 def get_default_user_input():
     return {
@@ -297,16 +296,18 @@ def get_default_user_input():
         "resource_expenses": dui.resource_expenses
     }
 
-# %% ../nbs/10_production.ipynb 20
+# %% ../nbs/10_production.ipynb 18
 # Create a Parameter instance & initialize with default pars.
 # The `Pars` instance will be passed between various modules
 Pars = par.Parameters()
 
-# %% ../nbs/10_production.ipynb 21
+# %% ../nbs/10_production.ipynb 19
 @app.post("/schedule")
 def find_schedule(user_input: UserInput):
-    update_parameters_from_user_input(Pars, user_input)
-    sched = prepare_schedule(Pars)
-    # prepare_schedule(Pars)
-    return sched
-    # return "works !!!!!!!!!!!!!!!!!!!!!!!!!"
+    error = update_parameters_from_user_input(Pars, user_input)
+    if error == None:
+        sched = prepare_schedule(Pars)
+        # prepare_schedule(Pars)
+        return sched
+    else:
+        return error
