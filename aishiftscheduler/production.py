@@ -275,7 +275,7 @@ app = FastAPI()
 # %% ../nbs/10_production.ipynb 15
 @app.get("/")
 def root():
-    return {"message": "Hello Oupa ..."}
+    return "Businessn AI Scheduler API"
 
 # %% ../nbs/10_production.ipynb 16
 dui = UserInput(
