@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BusinessN AI Scheduler Inputs</title>
+    <style>
+        /* body { */
+        body, html {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* height: 100vh; */
+            height: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            width: 400px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input {
+            width: calc(100% - 12px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #responseDataContainer {
+            overflow: auto;
+            max-height: 80%; /* Adjust the maximum height as needed */
+            width: 80%; /* Adjust the width as needed */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            /*counter-reset: none;*/ /* Remove line numbers */
+        }
+        #responseDataContainer::before {
+            content: none !important; /* Hide line numbers */
+        }         
+        .spinner {
+            display: none; /* Hide spinner by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+        .spinner-icon {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1>BusinessN AI Scheduler Inputs</h1>
+    <form id="myForm">
+        <label for="start">Start:</label>
+        <input type="text" id="start" name="start"><br>
+        
+        <label for="slots_per_day">Slots Per Day:</label>
+        <input type="number" id="slots_per_day" name="slots_per_day"><br>
+        
+        <label for="max_daily_slot_run">Max Daily Slot Run:</label>
+        <input type="number" id="max_daily_slot_run" name="max_daily_slot_run"><br>
+        
+        <label for="resources">Resources:</label>
+        <input type="text" id="resources" name="resources"><br>
+        
+        <label for="demands_per_busyness">Demands Per Busyness:</label>
+        <input type="text" id="demands_per_busyness" name="demands_per_busyness"><br>
+        
+        <label for="demands_per_volume">Demands Per Volume:</label>
+        <input type="text" id="demands_per_volume" name="demands_per_volume"><br>
+        
+        <label for="demands_per_revenue">Demands Per Revenue:</label>
+        <input type="text" id="demands_per_revenue" name="demands_per_revenue"><br>
+        
+        <label for="resource_expenses">Resource Expenses:</label>
+        <input type="text" id="resource_expenses" name="resource_expenses"><br>
+        
+        <button id="submitButton" type="button" onclick="submitForm()">Submit</button>
+    </form>
+    <div id="spinner" class="spinner">
+        <div class="spinner-icon"></div>
+    </div>
+    </div>
+    <div id="responseDataContainer"><!-- Response data will be displayed here --></div>
+
+    <script>
+        async function fetchData() {
+            try {
+                const response = await fetch('http://192.168.78.85:8000/defaultuserinput');
+                const responseData = await response.json();
+                console.log(responseData);
+
+                // Set default values for each input field
+                document.getElementById('start').value = responseData.start;
+                document.getElementById('slots_per_day').value = responseData.slots_per_day;
+                document.getElementById('max_daily_slot_run').value = responseData.max_daily_slot_run;
+                document.getElementById('resources').value = responseData.resources;
+                document.getElementById('demands_per_busyness').value = responseData.demands_per_busyness;
+                document.getElementById('demands_per_volume').value = responseData.demands_per_volume;
+                document.getElementById('demands_per_revenue').value = responseData.demands_per_revenue;
+                document.getElementById('resource_expenses').value = responseData.resource_expenses;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function submitForm() {
+            // Disable the submit button to prevent multiple submissions
+            // document.getElementById('submitButton').disabled = true;
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            // Store the original styles
+            const originalStyles = {
+                backgroundColor: submitButton.style.backgroundColor,
+                color: submitButton.style.color
+            };
+            // Change the styles to indicate disabled state
+            submitButton.style.backgroundColor = '#ccc'; // Change background color
+            submitButton.style.color = '#666'; // Change text color
+
+            //////////////////////////////////////////////////////////////////
+            // Show spinner
+            document.getElementById('spinner').style.display = 'block';
+            // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+            const formData = new FormData(document.getElementById('myForm'));
+            const data = {};
+            formData.forEach((value, key) => { data[key] = value });
+            
+            try {
+                const response = await fetch('http://192.168.78.85:8000/schedule', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const responseData = await response.json();
+                console.log(responseData);
+                // if (responseData.substring(0, 5) == "ERROR") {
+                if(!responseData["slots"]) {
+                    throw new Error(responseData);
+                }
+                ////////////////////////////////////////////////////////////////
+                // Display the response data in the responseDataContainer div
+                // const responseDataContainer = document.getElementById('responseDataContainer');
+                // responseDataContainer.innerHTML = JSON.stringify(responseData);
+                //responseDataContainer.innerHTML = JSON.stringify(responseData["slots"]);
+                // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+                /////////////////////////////////////////////////////////
+                // Display the response data in a formatted way
+                // const responseDataContainer = document.getElementById('responseDataContainer');
+                // let html = '<pre>';
+                // for (const key in responseData["slots"]) {
+                //     if(responseData["slots"].hasOwnProperty(key)) {
+                //         html += `${key}: ${responseData["slots"][key]}\n`;
+                //     }
+                // }
+                // html += '</pre>';
+                // responseDataContainer.innerHTML = html;
+                // \\\\\\\\\\\\\\\\\\
+
+                //////////////////////////////////////////////////////
+                // Display the response data in a formatted way
+                const responseDataContainer = document.getElementById('responseDataContainer');
+                const formattedData = formatData(responseData);
+                responseDataContainer.innerHTML = `<pre>${formattedData}</pre>`;
+                // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+                // Optionally, do something with the response data
+                // submitButton.disabled = false;
+                // submitButton.style.backgroundColor = '#ccc'; // Change background color
+                // submitButton.style.color = '#666'; // Change text color
+            } catch (error) {
+                // console.error('Error:', error);
+                alert(error);
+            } finally {
+                // Hide spinner
+                document.getElementById('spinner').style.display = 'none';                
+                // Restore the original styles and enable the button
+                submitButton.style.backgroundColor = originalStyles.backgroundColor;
+                submitButton.style.color = originalStyles.color;
+                submitButton.disabled = false;
+            }
+        }
+
+        function formatData(data) {
+            let formattedString = '';
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    if (typeof data[key] === 'object') {
+                        // If value is an object, recursively format it
+                        formattedString += `${key}: \n${formatData(data[key])}\n`;
+                    } else {
+                        formattedString += `${key}: ${data[key]}\n`;
+                    }
+                }
+            }
+            return formattedString;
+        }
+        // Fetch default values when the page loads
+        window.onload = fetchData;
+        //////////////////////////////////////////////////////////////////////////////
+        // Remove line numbers
+        // window.onload = function() {
+        //     const preElements = document.querySelectorAll('pre');
+        //     preElements.forEach(pre => {
+        //         const lines = pre.innerHTML.split('\n').slice(1).join('\n');
+        //         pre.innerHTML = lines;
+        //     });
+        // };
+        // window.onload = fetchData;
+        // \\\\\\\\\\\\\\\\\\\\\\\\
+    </script>
+</body>
+</html>

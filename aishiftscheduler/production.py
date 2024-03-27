@@ -30,31 +30,33 @@ from PIL import Image
 import aishiftscheduler.utils as utl
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 # %% ../nbs/10_production.ipynb 10
 def prepare_schedule(pars):
     start = time.time()
     if 'TRAIN' in cf.MODES:
         print('############################## TRAIN ##############################')
-        L = 2 #5 #20 #10 #5 #2 #3 #2db #10pub
-        T = 7*pars.SLOTS_PER_DAY #5 #7*96
-        First_n_t = int(1.2*T)
-        Last_n_t = int(1*T) ##make whole multiple of T to look better in chart
+        ## COMMENTED OUT TEMPORARILY FOR QUICKER TESTING
+        # L = 2 #5 #20 #10 #5 #2 #3 #2db #10pub
+        # T = 7*pars.SLOTS_PER_DAY #5 #7*96
+        # First_n_t = int(1.2*T)
+        # Last_n_t = int(1*T) ##make whole multiple of T to look better in chart
         
-        trn_Best_theta, trn_Worst_theta, trn_Df_first_n_t, trn_Df_last_n_t = \
-            trn.train_schedule(L, T, First_n_t, Last_n_t, pars)
+        # trn_Best_theta, trn_Worst_theta, trn_Df_first_n_t, trn_Df_last_n_t = \
+        #     trn.train_schedule(L, T, First_n_t, Last_n_t, pars)
         
-        trn_Best_theta_df = pd.DataFrame({
-            'thCumSlots': [trn_Best_theta[0]], 
-            'thSickProb': [trn_Best_theta[1]], 
-            'thCumMerits': [trn_Best_theta[2]], 
-            'thContSlots': [trn_Best_theta[3]],
-            'thSelect': [trn_Best_theta[4]]
-        })
-        ldr.save_best_theta(cf.PATH_best_theta_data, trn_Best_theta_df)
+        # trn_Best_theta_df = pd.DataFrame({
+        #     'thCumSlots': [trn_Best_theta[0]], 
+        #     'thSickProb': [trn_Best_theta[1]], 
+        #     'thCumMerits': [trn_Best_theta[2]], 
+        #     'thContSlots': [trn_Best_theta[3]],
+        #     'thSelect': [trn_Best_theta[4]]
+        # })
+        # ldr.save_best_theta(cf.PATH_best_theta_data, trn_Best_theta_df)
 
-        print(f'{trn_Best_theta=}')
-        print(f'{trn_Df_first_n_t.shape=}')
+        # print(f'{trn_Best_theta=}')
+        # print(f'{trn_Df_first_n_t.shape=}')
 
     if 'EVALU' in cf.MODES:
         print('############################## EVALU ##############################')
@@ -272,10 +274,19 @@ class UserInput(BaseModel):
 # %% ../nbs/10_production.ipynb 14
 app = FastAPI()
 
+# allow all origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
+
 # %% ../nbs/10_production.ipynb 15
 @app.get("/")
 def root():
-    return "Businessn AI Scheduler API"
+    return "BusinessN AI Scheduler API"
 
 # %% ../nbs/10_production.ipynb 16
 dui = UserInput(
@@ -295,10 +306,10 @@ dui = UserInput(
   demands_per_volume="0.03, 0.08, 0.2",
 
   # demands_per_revenue = '.05, .8',
-  demands_per_revenue=".00005, 0.0001, 0.0008",
+  demands_per_revenue="0.00005, 0.0001, 0.0008",
 
   # resource_expenses = '35.17, 23.85'
-  resource_expenses="25.0, 20.0, 18.0"    
+  resource_expenses="25.0, 20.0, 18.0",
 )
 
 # %% ../nbs/10_production.ipynb 17
