@@ -2,8 +2,8 @@
 
 # %% auto 0
 __all__ = ['app', 'my_userinputs', 'dui', 'Pars', 'prepare_schedule', 'update_parameters_from_user_input', 'UserInput',
-           'find_userinput', 'root', 'get_userinputs', 'create_userinputs', 'get_userinput', 'get_default_user_input',
-           'find_schedule']
+           'find_userinput', 'find_index_userinput', 'root', 'get_userinputs', 'create_userinputs', 'get_userinput',
+           'delete_userinput', 'get_default_user_input', 'find_schedule']
 
 # %% ../nbs/10_production.ipynb 6
 from collections import defaultdict
@@ -29,7 +29,7 @@ import aishiftscheduler.evaluator as evl
 import aishiftscheduler.parameters as par
 from PIL import Image
 import aishiftscheduler.utils as utl
-from fastapi import FastAPI
+from fastapi import FastAPI, Response, status, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.params import Body
@@ -323,17 +323,23 @@ def find_userinput(id):
             return ui
 
 # %% ../nbs/10_production.ipynb 18
+def find_index_userinput(id):
+    for i, ui in enumerate(my_userinputs):
+        if ui['id'] == id:
+            return i
+
+# %% ../nbs/10_production.ipynb 19
 @app.get("/")
 def root():
     return "BusinessN AI Scheduler API v1.0.0"
 
-# %% ../nbs/10_production.ipynb 19
+# %% ../nbs/10_production.ipynb 20
 @app.get("/userinputs")
 def get_userinputs():
     return {"data": my_userinputs}
 
-# %% ../nbs/10_production.ipynb 20
-@app.post("/userinputs")
+# %% ../nbs/10_production.ipynb 21
+@app.post("/userinputs", status_code=status.HTTP_201_CREATED)
 def create_userinputs(userinput: UserInput):
     userinput_dict = userinput.model_dump()
     userinput_dict['id'] = randrange(0, 1000000)
@@ -347,15 +353,31 @@ def create_userinputs(userinput: UserInput):
     # return {"data": "new userinput"}
     return {"data": userinput_dict}
 
-# %% ../nbs/10_production.ipynb 21
+# %% ../nbs/10_production.ipynb 22
 @app.get("/userinputs/{id}")
-def get_userinput(id: int):
+def get_userinput(id: int, response: Response):
     # print(id)
     userinput = find_userinput(id)
+    if not userinput:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"userinput with id: {id} was not found")
+        # response.status_code = status.HTTP_404_NOT_FOUND
+        # return {'message': f"userinput with id: {id} was not found"}
     # return {"userinput_detail": f"Here is userinput {id}"}
     return {"userinput_detail": userinput}
 
-# %% ../nbs/10_production.ipynb 22
+# %% ../nbs/10_production.ipynb 23
+@app.delete("/userinputs/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_userinput(id: int):
+    index = find_index_userinput(id)
+
+    if index == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"userinput with id: {id} does not exist")
+
+    my_userinputs.pop(index)
+    # return {'message': "userinput was successfully deleted"}
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+# %% ../nbs/10_production.ipynb 24
 dui = UserInput(
   start="2023-12-04", #2023-12-11
   slots_per_day=24,
@@ -379,7 +401,7 @@ dui = UserInput(
   resource_expenses="25.0, 20.0, 18.0",
 )
 
-# %% ../nbs/10_production.ipynb 23
+# %% ../nbs/10_production.ipynb 25
 @app.get("/defaultuserinput")
 def get_default_user_input():
     return {
@@ -393,17 +415,17 @@ def get_default_user_input():
         "resource_expenses": dui.resource_expenses
     }
 
-# %% ../nbs/10_production.ipynb 24
+# %% ../nbs/10_production.ipynb 26
 # @app.get("/userinput/{:id}")
 # def get_default_user_input():
 
 
-# %% ../nbs/10_production.ipynb 25
+# %% ../nbs/10_production.ipynb 27
 # Create a Parameter instance & initialize with default pars.
 # The `Pars` instance will be passed between various modules
 Pars = par.Parameters()
 
-# %% ../nbs/10_production.ipynb 26
+# %% ../nbs/10_production.ipynb 28
 @app.post("/schedule")
 def find_schedule(user_input: UserInput):
     error = update_parameters_from_user_input(Pars, user_input)
