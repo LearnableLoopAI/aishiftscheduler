@@ -1,0 +1,192 @@
+[
+  {
+    "objectID": "model.html",
+    "href": "model.html",
+    "title": "model",
+    "section": "",
+    "text": "!which python\n\n/Users/kobus/aishiftscheduler/.venv/bin/python\n# Set up autoreload\npd.__version__\n\n'2.0.3'\nclass MyClass(int): pass\n@patch\ndef func(self: MyClass, a): return self + a\nmc = MyClass(3)\nmc.func(10)\n\n13",
+    "crumbs": [
+      "model"
+    ]
+  },
+  {
+    "objectID": "model.html#usage",
+    "href": "model.html#usage",
+    "title": "model",
+    "section": "Usage",
+    "text": "Usage\n\n# # hide\n# # QUICK STEP\n# def print_S_t():\n#   print(f'M.S_t[\"R_t\"]=\\n{M.S_t[\"R_t\"]}')\n#   print(f'M.S_t[\"D_t\"]=\\n{M.S_t[\"D_t\"]}')\n\n# def print_x_t():\n#   # print(f'x_t.x_t= {x_t.x_t}')\n#   print(f'M.x_t[\"xAlloc_t\"]=\\n{M.x_t[\"xAlloc_t\"]}')\n\n# record = []\n# l = 1\n# M = Model()\n# P = pol.Policy(M)\n# ## DEM = DemandSimulator(seed=SEED_TRAIN); print(f'{DEM.simulate()=}')\n# ## MER = MeritSimulator(seed=SEED_TRAIN); print(f'{MER.simulate()=}')\n\n# theta_test = P.build_theta({\n#   'thCumSlots': .1,\n#   'thSickProb': .3,\n#   'thCumMerits': .2,\n#   'thContSlots': 1 - (.6),\n#   'thSelect': 'random'\n# })\n# record_l = [cf.piNAMES[0], theta_test, l]; print(f'{record_l=}')\n# print_S_t()\n# print_x_t()\n\n\n# ## hide\n# # T = 7*24\n# # T = 2*24\n# T = 2\n# # T = 1*SLOTS_PER_DAY\n# # T = 2*SLOTS_PER_DAY\n# dt = pd.to_datetime(cf.START_DATE_TIME)\n# dt_delta = pd.Timedelta(cf.DATE_TIME_DELTA)\n# for t in range(T):\n#   print(f'\\n################# t={t}, dt={dt} #################')\n#   # getattr(P, 'X__AllocBelow')(t, M.S_t, M.x_t, theta_test); #print(f'{x_t=}')\n#   getattr(P, 'X__Alloc')(t, dt, M.S_t, M.x_t, theta_test); #print(f'{x_t=}')\n#   print_S_t()\n#   print_x_t()\n\n#   # record_t = M.step(t, theta_test)\n#   record_t = M.step(t, dt, theta_test)\n#   print(f'\\nAFTER STEP:')\n#   record.append(record_l + record_t); #print(f'{record=}')\n#   dt = dt + dt_delta\n#   # print_S_t()\n#   # print(f'{M.Ccum=}')\n\n\n# ## hide\n# V = vis.Visualization()\n\n\n# df_test_n_t = pd.DataFrame.from_records(record, columns=cf.LABELS)\n# df_test_n_t.tail()\n\n\n# ## hide\n# V.plot_records(\n#   df=df_test_n_t,\n#   df_non=None,\n#   pars=defaultdict(str, {\n#     # 'thetaAdj1': {a1n: theta_test.thAdj1[a1n] for a1n in a1NAMES},\n#     # 'thetaAdj3': {a1n: theta_test.thAdj3[a1n] for a1n in a1NAMES},\n#     # 'suptitle': f'TRAINING OF X__AdjBelow POLICY'+'\\n'+f'(first {first_n_t} records)'+'\\n'+ \\\n#     # f'L = {L}, T = {T}, '+ \\\n#     # r'$\\theta^*=$'+f'{P.round_theta(best_theta_AdjBelow)}',\n#     'T': T\n#   }),\n# )",
+    "crumbs": [
+      "model"
+    ]
+  },
+  {
+    "objectID": "production.html",
+    "href": "production.html",
+    "title": "production",
+    "section": "",
+    "text": "!which python\n\n/Users/kobus/aishiftscheduler/.venv/bin/python\n\n\n\n!python --version\n\nPython 3.10.0\n\n\n\n# Set up autoreload\n\nThe autoreload extension is already loaded. To reload it, use:\n  %reload_ext autoreload\n\n\n\nnp.__version__, pd.__version__, mpl.__version__, ray.__version__, json.__version__\n\n('1.26.4', '2.0.3', '3.8.3', '2.9.3', '2.0.9')\n\n\n\n!pip list|grep fastapi\n\nfastapi                   0.110.0\n\n\n\n!pip list|grep uvicorn\n\nuvicorn                   0.27.1\n\n\n\nsource\n\nprepare_schedule\n\n prepare_schedule (pars)\n\n\nsource\n\n\nupdate_parameters_from_user_input\n\n update_parameters_from_user_input (pars, user_input)\n\n\nsource\n\n\nUserInput\n\n UserInput (start:str, slots_per_day:int, max_daily_slot_run:int,\n            resources:str, demands_per_busyness:str,\n            demands_per_volume:str, demands_per_revenue:str,\n            resource_expenses:str)\n\nUsage docs: https://docs.pydantic.dev/2.7/concepts/models/\nA base class for creating Pydantic models.\nAttributes: class_vars: The names of classvars defined on the model. private_attributes: Metadata about the private attributes of the model. signature: The signature for instantiating the model.\n__pydantic_complete__: Whether model building is completed, or if there are still undefined fields.\n__pydantic_core_schema__: The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.\n__pydantic_custom_init__: Whether the model has a custom `__init__` function.\n__pydantic_decorators__: Metadata containing the decorators defined on the model.\n    This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.\n__pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to\n    __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.\n__pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.\n__pydantic_post_init__: The name of the post-init method for the model, if defined.\n__pydantic_root_model__: Whether the model is a `RootModel`.\n__pydantic_serializer__: The pydantic-core SchemaSerializer used to dump instances of the model.\n__pydantic_validator__: The pydantic-core SchemaValidator used to validate instances of the model.\n\n__pydantic_extra__: An instance attribute with the values of extra fields from validation when\n    `model_config['extra'] == 'allow'`.\n__pydantic_fields_set__: An instance attribute with the names of fields explicitly set.\n__pydantic_private__: Instance attribute with the values of private attributes set on the model instance.\n\n# ############################################################\n# #################### FLOW STARTS ###########################\n# ############################################################\n\n\nsource\n\n\nfind_userinput\n\n find_userinput (id)\n\n\nsource\n\n\nfind_index_userinput\n\n find_index_userinput (id)\n\n\nsource\n\n\nroot\n\n root ()\n\n\nsource\n\n\nget_userinputs\n\n get_userinputs ()\n\n\nsource\n\n\ncreate_userinputs\n\n create_userinputs (userinput:__main__.UserInput)\n\n\nsource\n\n\nget_userinput\n\n get_userinput (id:int, response:starlette.responses.Response)\n\n\nsource\n\n\ndelete_userinput\n\n delete_userinput (id:int)\n\n\nsource\n\n\nget_default_user_input\n\n get_default_user_input ()\n\n\nsource\n\n\nfind_schedule\n\n find_schedule (user_input:__main__.UserInput)\n\n\n## test\n# prepare_schedule(Pars)\n\n/Users/kobus/aishiftscheduler/aishiftscheduler/shift_scheduler_data.xlsx\n/Users/kobus/aishiftscheduler/aishiftscheduler/best_theta_data.xlsx\n/Users/kobus/aishiftscheduler/aishiftscheduler/AIShiftScheduler1.png\n\nlen(thNAMES)=5\nthNAMES=['thCumSlots', 'thSickProb', 'thCumMerits', 'thContSlots', 'thSelect']",
+    "crumbs": [
+      "production"
+    ]
+  },
+  {
+    "objectID": "policy.html",
+    "href": "policy.html",
+    "title": "policy",
+    "section": "",
+    "text": "!which python\n\n/Users/kobus/aishiftscheduler/.venv/bin/python\n\n\n\n# Set up autoreload\n\n\npd.__version__\n\n'2.0.3'\n\n\n\n# from aishiftscheduler.model import Model ## here, else circular import for Model & Policy\n\n\n4.5 Policy Design\nThere are two main meta-classes of policy design. Each of these has two subclasses:\n\nPolicy Search\n\nPolicy Function Approximations (PFAs)\nCost Function Approximations (CFAs)\n\nLookahead\n\nValue Function Approximations (VFAs)\nDirect Lookaheads (DLAs)\n\n\nIn this project we will only use one approach:\n\nA simple allocate parameterized policy (from the PFA class), called X__Alloc.\n\n\n4.5.1 Implementation of Policy Design\n\n# from aishiftscheduler.model import Model ## here, else circular import for Model & Policy\n\n\n\n\n\nRemoteFunction object at 0x7f02694df070&gt;\n\n RemoteFunction object at 0x7f02694df070&gt; (*args, **kwargs)\n\nA remote function.\nThis is a decorated function. It can be used to spawn tasks.\nAttributes: _language: The target language. _function: The original function. _function_descriptor: The function descriptor. This is not defined until the remote function is first invoked because that is when the function is pickled, and the pickled function is used to compute the function descriptor. _function_name: The module and function name. _num_cpus: The default number of CPUs to use for invocations of this remote function. _num_gpus: The default number of GPUs to use for invocations of this remote function. _memory: The heap memory request in bytes for this task/actor, rounded down to the nearest integer. _resources: The default custom resource requirements for invocations of this remote function. _num_returns: The default number of return values for invocations of this remote function. _max_calls: The number of times a worker can execute this function before exiting. _max_retries: The number of times this task may be retried on worker failure. _retry_exceptions: Whether application-level errors should be retried. This can be a boolean or a list/tuple of exceptions that should be retried. _runtime_env: The runtime environment for this task. _decorator: An optional decorator that should be applied to the remote function invocation (as opposed to the function execution) before invoking the function. The decorator must return a function that takes in two arguments (“args” and “kwargs”). In most cases, it should call the function that was passed into the decorator and return the resulting ObjectRefs. For an example, see “test_decorated_function” in “python/ray/tests/test_basic.py”. _function_signature: The function signature. _last_export_session_and_job: A pair of the last exported session and job to help us to know whether this function was exported. This is an imperfect mechanism used to determine if we need to export the remote function again. It is imperfect in the sense that the actor class definition could be exported multiple times by different workers. _scheduling_strategy: Strategy about how to schedule this remote function.\n\nsource\n\n\nPolicy\n\n Policy ()\n\nInitialize self. See help(type(self)) for accurate signature.\n\nsource\n\n\nPolicy.build_policy\n\n Policy.build_policy (info)\n\n\nsource\n\n\nPolicy.build_theta\n\n Policy.build_theta (info)\n\n\nsource\n\n\nPolicy.X__Alloc\n\n Policy.X__Alloc (t, dt, S_t, x_t, theta, pars)\n\n\nsource\n\n\nPolicy.run_grid_sample_paths\n\n Policy.run_grid_sample_paths (theta, piName, record, L, T, pars)\n\n\nsource\n\n\nPolicy.perform_grid_search_sample_paths\n\n Policy.perform_grid_search_sample_paths (piName, thetas, L, T, pars)\n\n\n## def parallel_run_grid_sample_paths(...) is a function above this class\n\n\nsource\n\n\nPolicy.parallel_perform_grid_search_sample_paths\n\n Policy.parallel_perform_grid_search_sample_paths (piName, thetas, L, T,\n                                                   pars)\n\n\n# #| export\n# ## EXAMPLE:\n# ## thetasA: Buy\n# ## thetasA_name: 'thBuy'\n# ## names: ELA\n# ## 1_1: 1 theta sub-vectors, each having 1 theta\n# ## thetas = grid_search_thetas_1_2(thetasBuy 'thBuy', CAR_TYPES)\n# @patch\n# def grid_search_thetas_1_1(self:Policy, thetasA, thetasA_name, names):\n#     thetas = [\n#     self.build_theta({thetasA_name: {names[0]: thA0}})\n#     for thA0 in thetasA[names[0]]\n#     ]\n#     return thetas\n\n\n# #| export\n# ## EXAMPLE:\n# ## thetasA: Buy\n# ## thetasA_name: 'thBuy'\n# ## names: ELA, SON\n# ## 1_2: 1 theta sub-vectors, each having 2 thetas\n# ## thetas = grid_search_thetas_1_2(thetasBuy 'thBuy', CAR_TYPES)\n# @patch\n# def grid_search_thetas_1_2(self:Policy, thetasA, thetasA_name, names):\n#     thetas = [\n#     self.build_theta({thetasA_name: {names[0]: thA0, names[1]: thA1}})\n#     for thA0 in thetasA[names[0]]\n#       for thA1 in thetasA[names[1]]\n#     ]\n#     return thetas\n\n\n# ## EXAMPLE:\n# ## thetasA: Adj\n# ## thetasA_name: 'thAdj'\n# ## names: ELA, SON\n# ## 1_4: 1 theta sub-vectors, each having 4 thetas\n# ## thetas = grid_search_thetas_1_4(thetasBuy 'thAdj', bNAMES)\n# @patch\n# def grid_search_thetas_1_4(self:Policy, thetasA, thetasA_name, names):\n#     thetas = [\n#     self.build_theta({thetasA_name: {names[0]: thA0, names[1]: thA1, names[2]: thA2, names[3]: thA3}})\n#     for thA0 in thetasA[names[0]]\n#       for thA1 in thetasA[names[1]]\n#         for thA2 in thetasA[names[2]]\n#           for thA3 in thetasA[names[3]]\n#     ]\n#     return thetas\n\n\n# ## EXAMPLE:\n# ## thetasA: Buy\n# ## thetasB: Max\n# ## thetasA_name: 'thBuy'\n# ## thetasB_name: 'thMax'\n# ## names: ELA\n# ## 2_1: 2 theta sub-vectors, each having 1 theta\n# ## thetas = grid_search_thetas_2_1(thetasBuy, thetasMax, 'thBuy', 'thMax', CAR_TYPES)\n# @patch\n# def grid_search_thetas_2_1(self:Policy, thetasA, thetasB, thetasA_name, thetasB_name, names):\n#     thetas = [\n#     self.build_theta({thetasA_name: {names[0]: thA0}, thetasB_name: {names[0]: thB0}})\n#     for thA0 in thetasA[names[0]]\n#       for thB0 in thetasB[names[0]]\n#     ]\n#     return thetas\n\n\n# ## EXAMPLE:\n# ## thetasA: Buy\n# ## thetasB: Max\n# ## thetasA_name: 'thBuy'\n# ## thetasB_name: 'thMax'\n# ## names: ELA, SON\n# ## 2_2: 2 theta sub-vectors, each having 2 thetas\n# ## thetas = grid_search_thetas_4(thetasBuy, thetasMax, 'thBuy', 'thMax', CAR_TYPES)\n# @patch\n# def grid_search_thetas_2_2(self:Policy, thetasA, thetasB, thetasA_name, thetasB_name, names):\n#     thetas = [\n#     self.build_theta({thetasA_name: {names[0]: thA0, names[1]: thA1}, thetasB_name: {names[0]: thB0, names[1]: thB1}})\n#     for thA0 in thetasA[names[0]]\n#       for thA1 in thetasA[names[1]]\n#         for thB0 in thetasB[names[0]]\n#           for thB1 in thetasB[names[1]]\n#     ]\n#     return thetas",
+    "crumbs": [
+      "policy"
+    ]
+  },
+  {
+    "objectID": "trainer.html",
+    "href": "trainer.html",
+    "title": "trainer",
+    "section": "",
+    "text": "!which python\n\n/Users/kobus/aishiftscheduler/.venv/bin/python\n\n\n\n# Set up autoreload\n\n\npd.__version__\n\n'2.0.3'\n\n\n\nsource\n\nsetup_thetas_for_training\n\n setup_thetas_for_training ()\n\n\nsource\n\n\ndo_train\n\n do_train (L, T, Thetas, pars)\n\n\nsource\n\n\ntrain_schedule\n\n train_schedule (L, T, First_n_t, Last_n_t, pars)",
+    "crumbs": [
+      "trainer"
+    ]
+  },
+  {
+    "objectID": "inferencer.html",
+    "href": "inferencer.html",
+    "title": "inferencer",
+    "section": "",
+    "text": "!which python\n\n/Users/kobus/aishiftscheduler/.venv/bin/python\n\n\n\n# Set up autoreload\n\nThe autoreload extension is already loaded. To reload it, use:\n  %reload_ext autoreload\n\n\n\nsource\n\ndo_infer\n\n do_infer (L, T, best_theta_Alloc, pars)\n\n\nsource\n\n\nprepare_schedule_shifts_as_text\n\n prepare_schedule_shifts_as_text (df, buf, pars)\n\n\nsource\n\n\nprepare_schedule_slots_as_text\n\n prepare_schedule_slots_as_text (df, buf)\n\n\nsource\n\n\nprepare_schedule_slots_as_json\n\n prepare_schedule_slots_as_json (df, pars)\n\n\nsource\n\n\ninfer_schedule\n\n infer_schedule (L, T, First_n_t, stored_best_theta, pars)",
+    "crumbs": [
+      "inferencer"
+    ]
+  },
+  {
+    "objectID": "evaluator.html",
+    "href": "evaluator.html",
+    "title": "evaluator",
+    "section": "",
+    "text": "!which python\n\n/Users/kobus/aishiftscheduler/.venv/bin/python\n\n\n\n# Set up autoreload\n\n\npd.__version__\n\n'2.0.3'\n\n\n\nsource\n\ndo_evalu_opt\n\n do_evalu_opt (L, T, Best_theta_Alloc, pars)\n\n\nsource\n\n\ndo_evalu_non\n\n do_evalu_non (L, T, Worst_theta_Alloc, pars)\n\n\nsource\n\n\nevalu_schedule_opt\n\n evalu_schedule_opt (L, T, First_n_t, trn_Best_theta, pars)\n\n\nsource\n\n\nevalu_schedule_non\n\n evalu_schedule_non (L, T, First_n_t, trn_Worst_theta, pars)",
+    "crumbs": [
+      "evaluator"
+    ]
+  },
+  {
+    "objectID": "simulators.html",
+    "href": "simulators.html",
+    "title": "simulators",
+    "section": "",
+    "text": "!which python\n\n/Users/kobus/aishiftscheduler/.venv/bin/python\n# Set up autoreload\nnp.__version__\n\n'1.26.4'\n# !pip freeze | grep pandas\n# !pip freeze|grep openpyxl\n# !pip freeze\n# !pip install -U ray==2.8.1\n# !pip install openpyxl",
+    "crumbs": [
+      "simulators"
+    ]
+  },
+  {
+    "objectID": "simulators.html#demand-simulation",
+    "href": "simulators.html#demand-simulation",
+    "title": "simulators",
+    "section": "Demand simulation",
+    "text": "Demand simulation\n\nsource\n\nDemandSimulator\n\n DemandSimulator (T__sim=60, muD={'Manager': 4, 'AssistMngr': 2,\n                  'RetailAssoc': 2}, eventTimeD={'Manager': None,\n                  'AssistMngr': None, 'RetailAssoc': None},\n                  muDeltaD={'Manager': None, 'AssistMngr': None,\n                  'RetailAssoc': None}, seed=None)\n\nInitialize self. See help(type(self)) for accurate signature.\n\n\nExample of usage\n\ndem_sim = DemandSimulator(seed=1234)\nDemandData = []\nfor i in range(dPars.SIM_T):\n  d = list(dem_sim.simulate().values())\n  DemandData.append(d)\nlabels = [f'{bn}_dem' for bn in dPars.bNAMES]\ndf = pd.DataFrame.from_records(data=DemandData, columns=labels); df[:10]\n\n\n\n\n\n\n\n\n\nManager_dem\nAssistMngr_dem\nRetailAssoc_dem\n\n\n\n\n0\n5\n4\n3\n\n\n1\n2\n4\n3\n\n\n2\n6\n2\n3\n\n\n3\n1\n3\n2\n\n\n4\n3\n6\n2\n\n\n5\n2\n1\n0\n\n\n6\n4\n3\n1\n\n\n7\n7\n1\n4\n\n\n8\n3\n5\n0\n\n\n9\n4\n3\n1\n\n\n\n\n\n\n\n\n\ndef plot_output(df1, df2):\n  n_charts = len(dPars.bNAMES)\n  ylabelsize = 16\n  mpl.rcParams['lines.linewidth'] = 1.2\n  default_colors = plt.rcParams['axes.prop_cycle'].by_key()['color']\n  fig, axs = plt.subplots(n_charts, sharex=True)\n  fig.set_figwidth(13); fig.set_figheight(9)\n  fig.suptitle('Demand Simulation', fontsize=20)\n\n  for i,bn in enumerate(dPars.bNAMES):\n    axs[i].set_title(f'Demanded {bn}')\n    axs[i].set_ylim(auto=True); axs[i].spines['top'].set_visible(False); axs[i].spines['right'].set_visible(True); axs[i].spines['bottom'].set_visible(False)\n    axs[i].step(df1[f'{bn}_dem'], 'r-')\n    ## axs[i].axhline(y=dem_sim.muD[e], color='k', linestyle=':')\n    axs[i].axhline(y=0, color='k', linestyle=':')\n\n  axs[i].set_xlabel('$t\\ \\mathrm{[hourly\\ windows]}$', rotation=0, ha='center', va='center', fontweight='bold', size=ylabelsize)\n\n\nplot_output(df, None)",
+    "crumbs": [
+      "simulators"
+    ]
+  },
+  {
+    "objectID": "simulators.html#merit-simulation",
+    "href": "simulators.html#merit-simulation",
+    "title": "simulators",
+    "section": "Merit simulation",
+    "text": "Merit simulation\n\n#/// MERIT_PROBS = load_merit_probs(f'{base_dir}/{file_name}')\n\n\ncf.MERIT_PROBS\n\n\n\n\n\n\n\n\n\nResourceId\nMeritProb\nDemeritProb\n\n\n\n\n0\n1\n0.0100\n0.0400\n\n\n1\n2\n0.2000\n0.0900\n\n\n2\n3\n0.3000\n0.0300\n\n\n3\n4\n0.2000\n0.1500\n\n\n4\n5\n0.0500\n0.0200\n\n\n5\n6\n0.1000\n0.0100\n\n\n6\n7\n0.2000\n0.0200\n\n\n7\n8\n0.3000\n0.3000\n\n\n8\n9\n0.2000\n0.0100\n\n\n9\n10\n0.0600\n0.1200\n\n\n\n\n\n\n\n\n\nsource\n\nMeritSimulator\n\n MeritSimulator (seed=None)\n\nInitialize self. See help(type(self)) for accurate signature.\n\n\nExample of usage\n\n## breaks, need to fix\n# ## copy from the generated file and paste into ExogInfo tab of shift_scheduler_data.xlsx\n# mer_sim = MeritSimulator(seed=1234)\n# MeritData = []\n# # for i in range(100):\n# for i in range(672):\n#   mer = list(mer_sim.simulate().values())\n#   MeritData.append(mer)\n# labels = [f'{an}_merit' for an in dPars.aNAMES]\n# df = pd.DataFrame.from_records(data=MeritData, columns=labels); df[:10]\n\n\n# ////////////////////////////////////\n\n\n# dPars.bNAMES\n\n\n# an = dPars.aNAMES[0]\n\n\n# # resourceId,_ = an.split('_'); resourceId\n# _,resourceId = an.split('_'); resourceId\n\n\n# # MERIT_PROBS\n# dPars.MERIT_PROBS['ResourceId']\n\n\n# ///\n# a,b = MERIT_PROBS.loc[\n      #   MERIT_PROBS['ResourceId'] == resourceId,\n      #   ['MeritProb', 'DemeritProb']\n      # ].values[0]\n\n\n# aNAMES\n\n\n# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\n\n\n## copy from this file and paste into ExogInfo tab of shift_scheduler_data.xlsx\n## df.to_excel('merits.xlsx', index=False)\n\n\n## breaks, need to fix\n# import random\n# def plot_output(df1, df2):\n#   n_charts = len(cf.aNAMES)\n#   ylabelsize = 16\n#   mpl.rcParams['lines.linewidth'] = 1.2\n#   default_colors = plt.rcParams['axes.prop_cycle'].by_key()['color']\n#   fig, axs = plt.subplots(n_charts, sharex=True)\n#   fig.set_figwidth(13); fig.set_figheight(9)\n#   fig.suptitle('Merit Simulation', fontsize=20)\n\n#   for i,an in enumerate(dPars.aNAMES):\n#     axs[i].set_title(f'Merits for {an}')\n#     axs[i].set_ylim(-1, 1); axs[i].spines['top'].set_visible(False); axs[i].spines['right'].set_visible(True); axs[i].spines['bottom'].set_visible(False)\n#     axs[i].step(df1[f'{an}_merit'], 'r-')\n#     ## axs[i].axhline(y=dem_sim.muD[e], color='k', linestyle=':')\n#     axs[i].axhline(y=0, color='k', linestyle=':')\n#   axs[i].set_xlabel('$t\\ \\mathrm{[hourly\\ windows]}$', rotation=0, ha='center', va='center', fontweight='bold', size=ylabelsize)\n# plot_output(df, None)",
+    "crumbs": [
+      "simulators"
+    ]
+  },
+  {
+    "objectID": "parameters.html",
+    "href": "parameters.html",
+    "title": "parameters",
+    "section": "",
+    "text": "!which python\n\n/Users/kobus/aishiftscheduler/.venv/bin/python\n\n\n\n# Set up autoreload\n\n\npd.__version__\n\n'2.0.3'\n\n\n\n## SNAMES = [ #state variable names\n#     'RAvail_t', #available resource\n#     'R_t',      #resource\n#     'D_t',      #demand\n# ]\n## xNAMES = ['x_t'] #decision variable names\n\n\n## math parameters use 'math/small case' (as opposed to code parameters)\n\n\n## SNAMES = [ #state variable names\n#     'RAvail_t', #available resource\n#     'R_t',      #resource\n#     'D_t',      #demand\n# ]\n## xNAMES = ['x_t'] #decision variable names\n\n\n## math parameters use 'math/small case' (as opposed to code parameters)\n\n\nsource\n\nParameters\n\n Parameters ()\n\nInitialize self. See help(type(self)) for accurate signature.\n\n## ///////////////////////////\n# SLOTS_PER_DAY = {\n#     'QUARTER_HOUR': 96,\n#     'HOUR': 24,\n#     'BLOCK_8_HOUR': 3\n#     # 'BLOCK_8_HOUR': {0: '6H', 1: '10H', 2: '8H'}\n# }\n# DATE_TIME_DELTA = {\n#     'QUARTER_HOUR': '15min',\n#     'HOUR': '1H',\n#     'BLOCK_8_HOUR': '8H'\n#     # 'BLOCK_8_HOUR': {0: '6H', 1: '10H', 2: '8H'}\n# }\n## \\\\\\\\\\\\\\\\\\\\\n\n\n## ///////////////////////////\n# SLOTS_PER_DAY = {\n#     'QUARTER_HOUR': 96,\n#     'HOUR': 24,\n#     'BLOCK_8_HOUR': 3\n#     # 'BLOCK_8_HOUR': {0: '6H', 1: '10H', 2: '8H'}\n# }\n# DATE_TIME_DELTA = {\n#     'QUARTER_HOUR': '15min',\n#     'HOUR': '1H',\n#     'BLOCK_8_HOUR': '8H'\n#     # 'BLOCK_8_HOUR': {0: '6H', 1: '10H', 2: '8H'}\n# }\n## \\\\\\\\\\\\\\\\\\\\\n\n\nsource\n\n\nParameters.slots_per_day_and_date_time_delta\n\n Parameters.slots_per_day_and_date_time_delta (resolution)\n\n\nsource\n\n\nParameters.get_availabilities\n\n Parameters.get_availabilities (dt)\n\n\nsource\n\n\nParameters.get_dow_qod_capacities\n\n Parameters.get_dow_qod_capacities (dow)\n\n\nsource\n\n\nParameters.get_dow_hod_capacities\n\n Parameters.get_dow_hod_capacities (dow)\n\n\nsource\n\n\nParameters.get_dow_bod_capacities\n\n Parameters.get_dow_bod_capacities (dow)\n\n\nsource\n\n\nParameters.get_capacities\n\n Parameters.get_capacities (dow)\n\n\nsource\n\n\nParameters.setup_plot_labels\n\n Parameters.setup_plot_labels ()",
+    "crumbs": [
+      "parameters"
+    ]
+  },
+  {
+    "objectID": "utils.html",
+    "href": "utils.html",
+    "title": "utils",
+    "section": "",
+    "text": "!which python\n\n/Users/kobus/aishiftscheduler/.venv/bin/python\n\n\n\n# Set up autoreload\n\n\nsource\n\nprint_schedule_shifts\n\n print_schedule_shifts (df, pars)\n\n\nsource\n\n\ngap_minutes\n\n gap_minutes (resolution)\n\n\nsource\n\n\nprint_schedule_slots\n\n print_schedule_slots (df, pars)",
+    "crumbs": [
+      "utils"
+    ]
+  },
+  {
+    "objectID": "config.html",
+    "href": "config.html",
+    "title": "config",
+    "section": "",
+    "text": "# Set up autoreload\n\n\n# pd.__version__\n\n\n# #| export\n# BASE_DIR = '.'\n# # BASE_DIR = '..'\n# FILE_NAME = 'shift_scheduler_data.xlsx'\n\n\n# #| export\n# SIM_T = 60\n# ## SIM_MU_D = {bNAMES[0]: 4, bNAMES[1]: 2}\n# SIM_MU_D = {bNAMES[0]: 4, bNAMES[1]: 2, bNAMES[2]: 2}\n# print(f'\\n{SIM_MU_D=}')\n# assert len(SIM_MU_D.items())==len(bNAMES)\n\n# ## SIM_EVENT_TIME_D = {bNAMES[0]: None, bNAMES[1]: None, bNAMES[2]: None, bNAMES[3]: None}\n# ## SIM_EVENT_TIME_D = {bNAMES[0]: None, bNAMES[1]: None}\n# SIM_EVENT_TIME_D = {bNAMES[0]: None, bNAMES[1]: None, bNAMES[2]: None}\n# print(f'\\n{SIM_EVENT_TIME_D=}')\n# assert len(SIM_EVENT_TIME_D.items())==len(bNAMES)\n\n# ## SIM_MU_DELTA_D = {bNAMES[0]: None, bNAMES[1]: None, bNAMES[2]: None, bNAMES[3]: None}\n# SIM_MU_DELTA_D = {bNAMES[0]: None, bNAMES[1]: None, bNAMES[2]: None}\n# print(f'\\n{SIM_MU_DELTA_D=}')\n# assert len(SIM_MU_DELTA_D.items())==len(bNAMES)",
+    "crumbs": [
+      "config"
+    ]
+  },
+  {
+    "objectID": "visualization.html",
+    "href": "visualization.html",
+    "title": "visualization",
+    "section": "",
+    "text": "!which python\n\n/Users/kobus/aishiftscheduler/.venv/bin/python\n# Set up autoreload\npd.__version__\n\n'2.0.3'\n# !pip freeze | grep pandas\n# !pip freeze|grep openpyxl\n# !pip freeze\n# !pip install -U ray==2.8.1\n# !pip install openpyxl\nsource",
+    "crumbs": [
+      "visualization"
+    ]
+  },
+  {
+    "objectID": "visualization.html#usage",
+    "href": "visualization.html#usage",
+    "title": "visualization",
+    "section": "Usage",
+    "text": "Usage\n\n# ## hide\n# V = Visualization()\n\n\n# # hide\n# # QUICK STEP\n# def print_S_t():\n#   print(f'M.S_t[\"R_t\"]=\\n{M.S_t[\"R_t\"]}')\n#   print(f'M.S_t[\"D_t\"]=\\n{M.S_t[\"D_t\"]}')\n\n# def print_x_t():\n#   # print(f'x_t.x_t= {x_t.x_t}')\n#   print(f'M.x_t[\"xAlloc_t\"]=\\n{M.x_t[\"xAlloc_t\"]}')\n\n# record = []\n# l = 1\n# M = Model()\n# P = Policy(M)\n# ## DEM = DemandSimulator(seed=SEED_TRAIN); print(f'{DEM.simulate()=}')\n# ## MER = MeritSimulator(seed=SEED_TRAIN); print(f'{MER.simulate()=}')\n\n# theta_test = P.build_theta({\n#   'thCumSlots': .1,\n#   'thSickProb': .3,\n#   'thCumMerits': .2,\n#   'thContSlots': 1 - (.6),\n#   'thSelect': 'random'\n# })\n# record_l = [cf.piNAMES[0], theta_test, l]; print(f'{record_l=}')\n# print_S_t()\n# print_x_t()\n\n\n# ## hide\n# # T = 7*24\n# # T = 2*24\n# T = 2\n# # T = 1*SLOTS_PER_DAY\n# # T = 2*SLOTS_PER_DAY\n# dt = pd.to_datetime(cf.START_DATE_TIME)\n# dt_delta = pd.Timedelta(cf.DATE_TIME_DELTA)\n# for t in range(T):\n#   print(f'\\n################# t={t}, dt={dt} #################')\n#   # getattr(P, 'X__AllocBelow')(t, M.S_t, M.x_t, theta_test); #print(f'{x_t=}')\n#   getattr(P, 'X__Alloc')(t, dt, M.S_t, M.x_t, theta_test); #print(f'{x_t=}')\n#   print_S_t()\n#   print_x_t()\n\n#   # record_t = M.step(t, theta_test)\n#   record_t = M.step(t, dt, theta_test)\n#   print(f'\\nAFTER STEP:')\n#   record.append(record_l + record_t); #print(f'{record=}')\n#   dt = dt + dt_delta\n#   # print_S_t()\n#   # print(f'{M.Ccum=}')\n\n\n# ## hide\n# df_test_n_t = pd.DataFrame.from_records(record, columns=cf.LABELS)\n# df_test_n_t.tail()\n\n\n# ## hide\n# V.plot_records(\n#   df=df_test_n_t,\n#   df_non=None,\n#   pars=defaultdict(str, {\n#     'T': T\n#     # 'thetaAdj1': {a1n: theta_test.thAdj1[a1n] for a1n in a1NAMES},\n#     # 'thetaAdj3': {a1n: theta_test.thAdj3[a1n] for a1n in a1NAMES},\n#     # 'suptitle': f'TRAINING OF X__AdjBelow POLICY'+'\\n'+f'(first {first_n_t} records)'+'\\n'+ \\\n#     # f'L = {L}, T = {T}, '+ \\\n#     # r'$\\theta^*=$'+f'{P.round_theta(best_theta_AdjBelow)}',\n#   }),\n# )",
+    "crumbs": [
+      "visualization"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "aishiftscheduler",
+    "section": "",
+    "text": "This file will become your README and also the index of your documentation.",
+    "crumbs": [
+      "aishiftscheduler"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "aishiftscheduler",
+    "section": "Install",
+    "text": "Install\npip install aishiftscheduler",
+    "crumbs": [
+      "aishiftscheduler"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "aishiftscheduler",
+    "section": "How to use",
+    "text": "How to use\nFill me in please! Don’t forget code examples:\n\n# 1+1\n\n2",
+    "crumbs": [
+      "aishiftscheduler"
+    ]
+  },
+  {
+    "objectID": "loader.html",
+    "href": "loader.html",
+    "title": "loader",
+    "section": "",
+    "text": "# Set up autoreload\n\nThe autoreload extension is already loaded. To reload it, use:\n  %reload_ext autoreload\n\n\n\nsource\n\nload_sick_probs\n\n load_sick_probs (filename)\n\n\nsource\n\n\nload_merit_probs\n\n load_merit_probs (filename)\n\n\nsource\n\n\nload_exog_info\n\n load_exog_info (filename)\n\n\nsource\n\n\nsave_best_theta\n\n save_best_theta (filename, trn_Best_theta_df)\n\n\nsource\n\n\nload_best_theta\n\n load_best_theta (filename)",
+    "crumbs": [
+      "loader"
+    ]
+  }
+]
