@@ -3,9 +3,9 @@
 # %% auto 0
 __all__ = ['app', 'my_userinputs', 'dui', 'Pars', 'prepare_schedule', 'update_parameters_from_user_input', 'UserInput',
            'find_userinput', 'find_index_userinput', 'root', 'get_userinputs', 'create_userinputs', 'get_userinput',
-           'delete_userinput', 'get_default_user_input', 'find_schedule']
+           'delete_userinput', 'update_userinput', 'get_default_user_input', 'find_schedule']
 
-# %% ../nbs/10_production.ipynb 6
+# %% ../nbs/10_production.ipynb 7
 from collections import defaultdict
 import numpy as np
 import pandas as pd
@@ -34,8 +34,10 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.params import Body
 from random import randrange
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
-# %% ../nbs/10_production.ipynb 10
+# %% ../nbs/10_production.ipynb 11
 def prepare_schedule(pars):
     start = time.time()
     if 'TRAIN' in cf.MODES:
@@ -122,7 +124,7 @@ def prepare_schedule(pars):
     end = time.time(); print(f'EXECUTION TIME: {end - start} seconds')
     return prepped_sched
 
-# %% ../nbs/10_production.ipynb 11
+# %% ../nbs/10_production.ipynb 12
 # Update the Parameters instance, `Pars` with the latest user input.
 # def update_parameters_from_user_input(
 def update_parameters_from_user_input(pars, user_input):
@@ -263,7 +265,7 @@ def update_parameters_from_user_input(pars, user_input):
   pars.LABELS = pars.setup_plot_labels()
   return error
 
-# %% ../nbs/10_production.ipynb 12
+# %% ../nbs/10_production.ipynb 13
 class UserInput(BaseModel):
     start: str
     slots_per_day: int
@@ -274,12 +276,26 @@ class UserInput(BaseModel):
     demands_per_revenue: str
     resource_expenses: str
 
-# %% ../nbs/10_production.ipynb 13
+# %% ../nbs/10_production.ipynb 14
+# db stuff
+import time
+while True:
+    try:
+        conn = psycopg2.connect(host='localhost', database='sai_db2', user='postgres', password='p', cursor_factory=RealDictCursor)
+        cursor = conn.cursor()
+        print("Database connection was successful!")
+        break
+    except Exception as error:
+        print("Connecting to database failed")
+        print("Error: ", error)       
+        time.sleep(2)
+
+# %% ../nbs/10_production.ipynb 15
 # class ParamConfig():#will be copy of Parameters class
 # class UserInput():
 #     pass
 
-# %% ../nbs/10_production.ipynb 15
+# %% ../nbs/10_production.ipynb 17
 app = FastAPI()
 
 # allow all origins
@@ -291,7 +307,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# %% ../nbs/10_production.ipynb 16
+# %% ../nbs/10_production.ipynb 18
 my_userinputs = [{
     "start": "2023-12-04",
     "slots_per_day": 24,
@@ -316,29 +332,31 @@ my_userinputs = [{
     }
 ]
 
-# %% ../nbs/10_production.ipynb 17
+# %% ../nbs/10_production.ipynb 19
 def find_userinput(id):
     for ui in my_userinputs:
         if ui["id"] == id:
             return ui
 
-# %% ../nbs/10_production.ipynb 18
+# %% ../nbs/10_production.ipynb 20
 def find_index_userinput(id):
     for i, ui in enumerate(my_userinputs):
         if ui['id'] == id:
             return i
 
-# %% ../nbs/10_production.ipynb 19
+# %% ../nbs/10_production.ipynb 21
 @app.get("/")
 def root():
     return "BusinessN AI Scheduler API v1.0.0"
 
-# %% ../nbs/10_production.ipynb 20
+# %% ../nbs/10_production.ipynb 22
 @app.get("/userinputs")
 def get_userinputs():
-    return {"data": my_userinputs}
+    userinputs = cursor.execute("""SELECT * FROM userinputs """)
+    print(userinputs)
+    # return {"data": my_userinputs}
 
-# %% ../nbs/10_production.ipynb 21
+# %% ../nbs/10_production.ipynb 23
 @app.post("/userinputs", status_code=status.HTTP_201_CREATED)
 def create_userinputs(userinput: UserInput):
     userinput_dict = userinput.model_dump()
@@ -353,7 +371,7 @@ def create_userinputs(userinput: UserInput):
     # return {"data": "new userinput"}
     return {"data": userinput_dict}
 
-# %% ../nbs/10_production.ipynb 22
+# %% ../nbs/10_production.ipynb 24
 @app.get("/userinputs/{id}")
 def get_userinput(id: int, response: Response):
     # print(id)
@@ -365,7 +383,7 @@ def get_userinput(id: int, response: Response):
     # return {"userinput_detail": f"Here is userinput {id}"}
     return {"userinput_detail": userinput}
 
-# %% ../nbs/10_production.ipynb 23
+# %% ../nbs/10_production.ipynb 25
 @app.delete("/userinputs/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_userinput(id: int):
     index = find_index_userinput(id)
@@ -377,7 +395,20 @@ def delete_userinput(id: int):
     # return {'message': "userinput was successfully deleted"}
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-# %% ../nbs/10_production.ipynb 24
+# %% ../nbs/10_production.ipynb 26
+@app.put("/userinputs/{id}")
+def update_userinput(id: int, userinput: UserInput):
+    index = find_index_userinput(id)
+
+    if index == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"userinput with id: {id} does not exist")
+    
+    userinput_dict = userinput.model_dump()
+    userinput_dict['id'] = id
+    my_userinputs[index] = userinput_dict
+    return {'data': userinput_dict}
+
+# %% ../nbs/10_production.ipynb 27
 dui = UserInput(
   start="2023-12-04", #2023-12-11
   slots_per_day=24,
@@ -401,7 +432,7 @@ dui = UserInput(
   resource_expenses="25.0, 20.0, 18.0",
 )
 
-# %% ../nbs/10_production.ipynb 25
+# %% ../nbs/10_production.ipynb 28
 @app.get("/defaultuserinput")
 def get_default_user_input():
     return {
@@ -415,17 +446,17 @@ def get_default_user_input():
         "resource_expenses": dui.resource_expenses
     }
 
-# %% ../nbs/10_production.ipynb 26
+# %% ../nbs/10_production.ipynb 29
 # @app.get("/userinput/{:id}")
 # def get_default_user_input():
 
 
-# %% ../nbs/10_production.ipynb 27
+# %% ../nbs/10_production.ipynb 30
 # Create a Parameter instance & initialize with default pars.
 # The `Pars` instance will be passed between various modules
 Pars = par.Parameters()
 
-# %% ../nbs/10_production.ipynb 28
+# %% ../nbs/10_production.ipynb 31
 @app.post("/schedule")
 def find_schedule(user_input: UserInput):
     error = update_parameters_from_user_input(Pars, user_input)
