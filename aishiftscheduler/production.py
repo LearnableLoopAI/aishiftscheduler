@@ -352,30 +352,46 @@ def root():
 # %% ../nbs/10_production.ipynb 22
 @app.get("/userinputs")
 def get_userinputs():
-    userinputs = cursor.execute("""SELECT * FROM userinputs """)
-    print(userinputs)
+    cursor.execute("""SELECT * FROM userinputs """)
+    userinputs = cursor.fetchall()
+    # print(userinputs)
     # return {"data": my_userinputs}
+    return {"data": userinputs}
 
 # %% ../nbs/10_production.ipynb 23
 @app.post("/userinputs", status_code=status.HTTP_201_CREATED)
 def create_userinputs(userinput: UserInput):
-    userinput_dict = userinput.model_dump()
-    userinput_dict['id'] = randrange(0, 1000000)
+    # userinput_dict = userinput.model_dump()
+    # userinput_dict['id'] = randrange(0, 1000000)
     # print(new_userinput.start)
     # print(userinput)
     #- print(new_userinput.dict())
     # print(userinput.model_dump())
     # my_userinputs.append(userinput.model_dump())
-    my_userinputs.append(userinput_dict)
+    # my_userinputs.append(userinput_dict)
+
+    cursor.execute("""INSERT INTO userinputs (start, slots_per_day, max_daily_slot_run, resources, demands_per_busyness, demands_per_volume, demands_per_revenue, resource_expenses) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING * """,
+        (userinput.start,
+         userinput.slots_per_day,
+         userinput.max_daily_slot_run,
+         userinput.resources,
+         userinput.demands_per_busyness,
+         userinput.demands_per_volume,
+         userinput.demands_per_revenue,
+         userinput.resource_expenses))
+    new_userinput = cursor.fetchone()
+    conn.commit()
     # return {"new_userinput": f"start {payLoad['start']} slots_per_day: {payLoad['slots_per_day']}"}
     # return {"data": "new userinput"}
-    return {"data": userinput_dict}
+    return {"data": new_userinput}
 
 # %% ../nbs/10_production.ipynb 24
 @app.get("/userinputs/{id}")
-def get_userinput(id: int, response: Response):
-    # print(id)
-    userinput = find_userinput(id)
+# def get_userinput(id: int, response: Response):
+def get_userinput(id: str):
+    cursor.execute("""SELECT * FROM userinputs WHERE id = %s """, (str(id),))
+    userinput = cursor.fetchone()
+    # userinput = find_userinput(id)
     if not userinput:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"userinput with id: {id} was not found")
         # response.status_code = status.HTTP_404_NOT_FOUND
@@ -386,27 +402,56 @@ def get_userinput(id: int, response: Response):
 # %% ../nbs/10_production.ipynb 25
 @app.delete("/userinputs/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_userinput(id: int):
-    index = find_index_userinput(id)
 
-    if index == None:
+    cursor.execute("""DELETE FROM userinputs WHERE id = %s RETURNING *""", (str(id),))
+    deleted_userinput = cursor.fetchone()
+    conn.commit()
+    # index = find_index_userinput(id)
+
+    if deleted_userinput == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"userinput with id: {id} does not exist")
 
-    my_userinputs.pop(index)
+    # my_userinputs.pop(index)
+
     # return {'message': "userinput was successfully deleted"}
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 # %% ../nbs/10_production.ipynb 26
 @app.put("/userinputs/{id}")
 def update_userinput(id: int, userinput: UserInput):
-    index = find_index_userinput(id)
-
-    if index == None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"userinput with id: {id} does not exist")
-    
-    userinput_dict = userinput.model_dump()
-    userinput_dict['id'] = id
-    my_userinputs[index] = userinput_dict
-    return {'data': userinput_dict}
+    # index = find_index_userinput(id)
+    cursor.execute("""\
+        UPDATE userinputs \
+        SET \
+            start=%s, \
+            slots_per_day=%s, \
+            max_daily_slot_run=%s, \
+            resources=%s, \
+            demands_per_busyness=%s, \
+            demands_per_volume=%s, \
+            demands_per_revenue=%s, \
+            resource_expenses=%s \
+        WHERE id=%s RETURNING *""",
+            (userinput.start,
+            userinput.slots_per_day,
+            userinput.max_daily_slot_run,
+            userinput.resources,
+            userinput.demands_per_busyness,
+            userinput.demands_per_volume,
+            userinput.demands_per_revenue,
+            userinput.resource_expenses,
+            str(id)))
+    updated_userinput = cursor.fetchone()
+    conn.commit()
+    if updated_userinput == None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"userinput with id: {id} does not exist")
+    # userinput_dict = userinput.model_dump()
+    # userinput_dict['id'] = id
+    # my_userinputs[index] = userinput_dict
+    # return {'data': userinput_dict}
+    return {'data': updated_userinput}
 
 # %% ../nbs/10_production.ipynb 27
 dui = UserInput(
