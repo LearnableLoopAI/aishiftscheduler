@@ -355,6 +355,7 @@ dbm.Base.metadata.create_all(bind=engine)
 # %% ../nbs/10_production.ipynb 22
 app.include_router(rts.userinput_router)
 app.include_router(rts.user_router)
+app.include_router(rts.auth_router)
 
 # %% ../nbs/10_production.ipynb 23
 @app.get("/")
