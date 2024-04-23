@@ -7,6 +7,7 @@ __all__ = ['auth_router', 'userinput_router', 'user_router', 'login', 'get_useri
 # %% ../nbs/15_routers.ipynb 7
 from typing import List
 from fastapi import Response, status, HTTPException, Depends, APIRouter
+from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 # from pydantic import BaseModel
 # # from passlib.context import CryptContext
 # from fastapi.middleware.cors import CORSMiddleware
@@ -27,6 +28,7 @@ from sqlalchemy.orm import sessionmaker, Session
 import aishiftscheduler.dbmodels as dbm
 import aishiftscheduler.schemas as sch
 import aishiftscheduler.utils as utl
+import aishiftscheduler.oauth2 as oa2
 from .database import get_db
 
 # %% ../nbs/15_routers.ipynb 9
@@ -34,8 +36,10 @@ auth_router = APIRouter(tags=['Authentication'])
 
 # %% ../nbs/15_routers.ipynb 10
 @auth_router.post('/login')
-def login(user_credentials: sch.UserLogin, db: Session=Depends(get_db)):
-    user = db.query(dbm.User).filter(dbm.User.email == user_credentials.email).first()
+# def login(user_credentials: sch.UserLogin, db: Session=Depends(get_db)):
+def login(user_credentials: OAuth2PasswordRequestForm=Depends(), db: Session=Depends(get_db)):
+    # user = db.query(dbm.User).filter(dbm.User.email == user_credentials.email).first()
+    user = db.query(dbm.User).filter(dbm.User.email == user_credentials.username).first()
 
     if not user:
         raise HTTPException(
@@ -53,7 +57,8 @@ def login(user_credentials: sch.UserLogin, db: Session=Depends(get_db)):
     
     ## create a token
     ## return token
-    return {"token": "example token"}
+    access_token = oa2.create_access_token(data={"user_id": user.id})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 # %% ../nbs/15_routers.ipynb 12
 userinput_router = APIRouter(
