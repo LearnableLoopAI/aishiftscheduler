@@ -35,7 +35,7 @@ from .database import get_db
 auth_router = APIRouter(tags=['Authentication'])
 
 # %% ../nbs/15_routers.ipynb 10
-@auth_router.post('/login')
+@auth_router.post('/login', response_model=sch.Token)
 # def login(user_credentials: sch.UserLogin, db: Session=Depends(get_db)):
 def login(user_credentials: OAuth2PasswordRequestForm=Depends(), db: Session=Depends(get_db)):
     # user = db.query(dbm.User).filter(dbm.User.email == user_credentials.email).first()
@@ -43,14 +43,14 @@ def login(user_credentials: OAuth2PasswordRequestForm=Depends(), db: Session=Dep
 
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
+            status_code=status.HTTP_403_FORBIDDEN, 
             # detail=f"Invalid Credentials"
             detail=f"not user !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         )
 
     if not utl.verify(user_credentials.password, user.password):
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
+            status_code=status.HTTP_403_FORBIDDEN, 
             # detail=f"Invalid Credentials"
             detail=f"fail verify !!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         )
@@ -69,14 +69,19 @@ userinput_router = APIRouter(
 # %% ../nbs/15_routers.ipynb 14
 # @app.get("/userinputs", response_model=List[sch.UserInput])
 @userinput_router.get("/", response_model=List[sch.UserInput])
-def get_userinputs(db: Session=Depends(get_db)):
+def get_userinputs(db: Session=Depends(get_db), user_id: int=Depends(oa2.get_current_user)):
     userinputs = db.query(dbm.UserInput).all()
     return userinputs
 
 # %% ../nbs/15_routers.ipynb 15
 @userinput_router.post("/", status_code=status.HTTP_201_CREATED, response_model=sch.UserInput)
-def create_userinputs(userinput: sch.UserInputCreate, db: Session = Depends(get_db)):
-    new_userinput = dbm.UserInput(**userinput.model_dump())
+# def create_userinputs(userinput: sch.UserInputCreate, db: Session = Depends(get_db), get_current_user: int=Depends(oa2.get_current_user)):
+# def create_userinputs(userinput: sch.UserInputCreate, db: Session = Depends(get_db), user_id: int=Depends(oa2.get_current_user)):
+def create_userinputs(userinput: sch.UserInputCreate, db: Session = Depends(get_db), current_user: int=Depends(oa2.get_current_user)):  
+    # print(user_id)
+    # print(current_user.email)
+    # new_userinput = dbm.UserInput(**userinput.model_dump())
+    new_userinput = dbm.UserInput(user_id=current_user.id, **userinput.model_dump())
     db.add(new_userinput)
     db.commit()
     db.refresh(new_userinput)
@@ -84,7 +89,8 @@ def create_userinputs(userinput: sch.UserInputCreate, db: Session = Depends(get_
 
 # %% ../nbs/15_routers.ipynb 16
 @userinput_router.get("/{id}", response_model=sch.UserInput)
-def get_userinput(id: int, db: Session = Depends(get_db)):
+# def get_userinput(id: int, db: Session = Depends(get_db), user_id: int=Depends(oa2.get_current_user)):
+def get_userinput(id: int, db: Session = Depends(get_db), current_user: int=Depends(oa2.get_current_user)):
     userinput = db.query(dbm.UserInput).filter(dbm.UserInput.id == id).first()
     if not userinput:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"userinput with id: {id} was not found")
@@ -92,7 +98,8 @@ def get_userinput(id: int, db: Session = Depends(get_db)):
 
 # %% ../nbs/15_routers.ipynb 17
 @userinput_router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_userinput(id: int, db: Session = Depends(get_db)):
+# def delete_userinput(id: int, db: Session = Depends(get_db), user_id: int=Depends(oa2.get_current_user)):
+def delete_userinput(id: int, db: Session = Depends(get_db), current_user: int=Depends(oa2.get_current_user)):    
     userinput = db.query(dbm.UserInput).filter(dbm.UserInput.id == id)
     if userinput.first() == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"userinput with id: {id} does not exist")
@@ -103,7 +110,8 @@ def delete_userinput(id: int, db: Session = Depends(get_db)):
 
 # %% ../nbs/15_routers.ipynb 18
 @userinput_router.put("/{id}", response_model=sch.UserInput)
-def update_userinput(id: int, updated_userinput: sch.UserInputUpdate, db: Session=Depends(get_db)):
+# def update_userinput(id: int, updated_userinput: sch.UserInputUpdate, db: Session=Depends(get_db), user_id: int=Depends(oa2.get_current_user)):
+def update_userinput(id: int, updated_userinput: sch.UserInputUpdate, db: Session=Depends(get_db), current_user: int=Depends(oa2.get_current_user)):
     userinput_query = db.query(dbm.UserInput).filter(dbm.UserInput.id == id)
     userinput = userinput_query.first()
     if userinput == None:
