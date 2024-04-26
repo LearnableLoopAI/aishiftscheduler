@@ -18,6 +18,8 @@ __all__ = ['SQLALCHEMY_DATABASE_URL', 'engine', 'SessionLocal', 'Base', 'get_db'
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+import psycopg2
+from psycopg2.extras import RealDictCursor
 SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:p@localhost/sai_db2'
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -35,3 +37,17 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# %% ../nbs/16_database.ipynb 9
+## db stuff
+import time
+while True:
+    try:
+        conn = psycopg2.connect(host='localhost', database='sai_db2', user='postgres', password='p', cursor_factory=RealDictCursor)
+        cursor = conn.cursor()
+        print("Database connection was successful!")
+        break
+    except Exception as error:
+        print("Connecting to database failed")
+        print("Error: ", error)       
+        time.sleep(2)

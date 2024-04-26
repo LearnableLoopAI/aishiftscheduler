@@ -29,27 +29,27 @@ import aishiftscheduler.parameters as par
 from PIL import Image
 import aishiftscheduler.utils as utl
 
-from typing import Optional, List
+# from typing import Optional, List
 from fastapi import FastAPI, Response, status, HTTPException, Depends
-from pydantic import BaseModel
+# from pydantic import BaseModel
 # from passlib.context import CryptContext
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.params import Body
-from random import randrange
+# from random import randrange
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
 # # sqlalchemy and ORM (database.py from tut)
 # from sqlalchemy import create_engine
 # from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+# from sqlalchemy.orm import sessionmaker, Session
 # SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:p@localhost/sai_db2'
 # engine = create_engine(SQLALCHEMY_DATABASE_URL)
 # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Base = declarative_base()
 
 import aishiftscheduler.dbmodels as dbm
-from .database import engine, get_db
+from .database import engine
 
 import aishiftscheduler.schemas as sch
 
@@ -274,25 +274,11 @@ def update_parameters_from_user_input(pars, user_input):
   return error
 
 # %% ../nbs/10_production.ipynb 14
-## db stuff
-import time
-while True:
-    try:
-        conn = psycopg2.connect(host='localhost', database='sai_db2', user='postgres', password='p', cursor_factory=RealDictCursor)
-        cursor = conn.cursor()
-        print("Database connection was successful!")
-        break
-    except Exception as error:
-        print("Connecting to database failed")
-        print("Error: ", error)       
-        time.sleep(2)
-
-# %% ../nbs/10_production.ipynb 15
 # class ParamConfig():#will be copy of Parameters class
 # class UserInput():
 #     pass
 
-# %% ../nbs/10_production.ipynb 17
+# %% ../nbs/10_production.ipynb 16
 app = FastAPI()
 
 ## allow all origins
@@ -304,65 +290,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# %% ../nbs/10_production.ipynb 18
+# %% ../nbs/10_production.ipynb 17
 # pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 dbm.Base.metadata.create_all(bind=engine)
 
-# def get_db():
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     finally:
-#         db.close()
-
-# %% ../nbs/10_production.ipynb 19
-#/// my_userinputs = [{
-#     "start": "2023-12-04",
-#     "slots_per_day": 24,
-#     "max_daily_slot_run": 9,
-#     "resources": "Manager: Matt; AssistMngr: Mike, Tanner; RetailAssoc: Jake, James, Jane, John, Jim, Jenny, Jeremy, Judy, Julie, Jeffrey",
-#     "demands_per_busyness": "0.005, 0.008, 0.02",
-#     "demands_per_volume": "0.03, 0.08, 0.2",
-#     "demands_per_revenue": "0.00005, 0.0001, 0.0008",
-#     "resource_expenses": "25.0, 20.0, 18.0",
-#     "id": 1
-#     },
-#     {
-#     "start": "2023-12-11",
-#     "slots_per_day": 24,
-#     "max_daily_slot_run": 8,
-#     "resources": "Manager: Allen; AssistMngr: Rochelle; GroceryManager: Dave; Nightcrew: Brian, Nas, Camden",
-#     "demands_per_busyness": "0.009, 0.006, 0.008, 0.03",
-#     "demands_per_volume": "0.08, 0.05, 0.02, 0.7",
-#     "demands_per_revenue": "0.00003, 0.0002, 0.0003, 0.0001",
-#     "resource_expenses": "50.0, 40.0, 30.0, 25.0",
-#     "id": 2
-#     }
-# ]
-
-# %% ../nbs/10_production.ipynb 20
-#/// def find_userinput(id):
-#     for ui in my_userinputs:
-#         if ui["id"] == id:
-#             return ui
-
-# %% ../nbs/10_production.ipynb 21
-#/// def find_index_userinput(id):
-#     for i, ui in enumerate(my_userinputs):
-#         if ui['id'] == id:
-#             return i
-
-# %% ../nbs/10_production.ipynb 22
+# %% ../nbs/10_production.ipynb 18
 app.include_router(rts.userinput_router)
 app.include_router(rts.user_router)
 app.include_router(rts.auth_router)
 
-# %% ../nbs/10_production.ipynb 23
+# %% ../nbs/10_production.ipynb 19
 @app.get("/")
 def root():
     return "BusinessN AI Scheduler API v1.0.0"
 
-# %% ../nbs/10_production.ipynb 24
+# %% ../nbs/10_production.ipynb 20
 dui = sch.UserInputBase(
   start="2023-12-04", ##2023-12-11
   slots_per_day=24,
@@ -386,7 +328,7 @@ dui = sch.UserInputBase(
   resource_expenses="25.0, 20.0, 18.0",
 )
 
-# %% ../nbs/10_production.ipynb 25
+# %% ../nbs/10_production.ipynb 21
 @app.get("/defaultuserinput")
 def get_default_user_input():
     return {
@@ -400,12 +342,12 @@ def get_default_user_input():
         "resource_expenses": dui.resource_expenses
     }
 
-# %% ../nbs/10_production.ipynb 26
+# %% ../nbs/10_production.ipynb 22
 ## Create a Parameter instance & initialize with default pars.
 ## The `Pars` instance will be passed between various modules
 Pars = par.Parameters()
 
-# %% ../nbs/10_production.ipynb 27
+# %% ../nbs/10_production.ipynb 23
 @app.post("/schedule")
 def find_schedule(user_input: sch.UserInputBase):
     error = update_parameters_from_user_input(Pars, user_input)
