@@ -99,11 +99,14 @@ def get_userinput(id: int, db: Session = Depends(get_db), current_user: int=Depe
 # %% ../nbs/15_routers.ipynb 17
 @userinput_router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 # def delete_userinput(id: int, db: Session = Depends(get_db), user_id: int=Depends(oa2.get_current_user)):
-def delete_userinput(id: int, db: Session = Depends(get_db), current_user: int=Depends(oa2.get_current_user)):    
-    userinput = db.query(dbm.UserInput).filter(dbm.UserInput.id == id)
-    if userinput.first() == None:
+def delete_userinput(id: int, db: Session = Depends(get_db), current_user: int=Depends(oa2.get_current_user)):
+    userinput_query = db.query(dbm.UserInput).filter(dbm.UserInput.id == id)
+    userinput = userinput_query.first()
+    if userinput == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"userinput with id: {id} does not exist")
-    userinput.delete(synchronize_session=False)
+    if userinput.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to perform requested action")
+    userinput_query.delete(synchronize_session=False)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -117,7 +120,11 @@ def update_userinput(id: int, updated_userinput: sch.UserInputUpdate, db: Sessio
     if userinput == None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"userinput with id: {id} does not exist")    
+            detail=f"userinput with id: {id} does not exist")
+    if userinput.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to perform requested action")
     userinput_query.update(updated_userinput.model_dump(), synchronize_session=False)
     db.commit()
     return userinput_query.first()
