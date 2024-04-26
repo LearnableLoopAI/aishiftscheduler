@@ -5,7 +5,7 @@ __all__ = ['auth_router', 'userinput_router', 'user_router', 'login', 'get_useri
            'delete_userinput', 'update_userinput', 'create_user']
 
 # %% ../nbs/15_routers.ipynb 7
-from typing import List
+from typing import List, Optional
 from fastapi import Response, status, HTTPException, Depends, APIRouter
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 # from pydantic import BaseModel
@@ -20,6 +20,7 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 # from sqlalchemy import create_engine
 # from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy import and_
 # SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:p@localhost/sai_db2'
 # engine = create_engine(SQLALCHEMY_DATABASE_URL)
 # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -69,9 +70,17 @@ userinput_router = APIRouter(
 # %% ../nbs/15_routers.ipynb 14
 # @app.get("/userinputs", response_model=List[sch.UserInput])
 @userinput_router.get("/", response_model=List[sch.UserInput])
-def get_userinputs(db: Session=Depends(get_db), current_user=Depends(oa2.get_current_user)):
-    # userinputs = db.query(dbm.UserInput).all()
-    userinputs = db.query(dbm.UserInput).filter(dbm.UserInput.user_id == current_user.id).all()
+# def get_userinputs(db: Session=Depends(get_db), current_user=Depends(oa2.get_current_user)):
+def get_userinputs(
+  db: Session=Depends(get_db), 
+  current_user = Depends(oa2.get_current_user),
+  limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+    print(f'{limit=}')
+    ## userinputs = db.query(dbm.UserInput).all()
+    userinputs = db.query(dbm.UserInput) \
+      .filter(
+          and_(dbm.UserInput.user_id == current_user.id, dbm.UserInput.resources.contains(search))) \
+      .limit(limit).offset(skip).all()
     return userinputs
 
 # %% ../nbs/15_routers.ipynb 15
