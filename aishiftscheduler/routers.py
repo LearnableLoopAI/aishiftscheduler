@@ -69,8 +69,9 @@ userinput_router = APIRouter(
 # %% ../nbs/15_routers.ipynb 14
 # @app.get("/userinputs", response_model=List[sch.UserInput])
 @userinput_router.get("/", response_model=List[sch.UserInput])
-def get_userinputs(db: Session=Depends(get_db), user_id: int=Depends(oa2.get_current_user)):
-    userinputs = db.query(dbm.UserInput).all()
+def get_userinputs(db: Session=Depends(get_db), current_user=Depends(oa2.get_current_user)):
+    # userinputs = db.query(dbm.UserInput).all()
+    userinputs = db.query(dbm.UserInput).filter(dbm.UserInput.user_id == current_user.id).all()
     return userinputs
 
 # %% ../nbs/15_routers.ipynb 15
@@ -91,7 +92,8 @@ def create_userinputs(userinput: sch.UserInputCreate, db: Session = Depends(get_
 @userinput_router.get("/{id}", response_model=sch.UserInput)
 # def get_userinput(id: int, db: Session = Depends(get_db), user_id: int=Depends(oa2.get_current_user)):
 def get_userinput(id: int, db: Session = Depends(get_db), current_user: int=Depends(oa2.get_current_user)):
-    userinput = db.query(dbm.UserInput).filter(dbm.UserInput.id == id).first()
+    # userinput = db.query(dbm.UserInput).filter(dbm.UserInput.id == id).first()
+    userinput = db.query(dbm.UserInput).filter(dbm.UserInput.user_id == current_user.id).first()
     if not userinput:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"userinput with id: {id} was not found")
     return userinput

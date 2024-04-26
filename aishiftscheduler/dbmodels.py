@@ -8,6 +8,7 @@ __all__ = ['UserInput', 'User']
 # from aishiftscheduler.production import Base
 from .database import Base
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 
@@ -27,6 +28,8 @@ class UserInput(Base):
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
 
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+
+    user = relationship("User")
 
 # %% ../nbs/13_dbmodels.ipynb 9
 class User(Base):
