@@ -20,7 +20,8 @@ class UserOut(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        # orm_mode = True
+        from_attributes = True
 
 # %% ../nbs/14_schemas.ipynb 9
 class UserInputBase(BaseModel):
@@ -50,7 +51,8 @@ class UserInput(UserInputBase):
     user: UserOut
 
     class Config:
-        orm_mode = True
+        # orm_mode = True
+        from_attributes = True
 
 # %% ../nbs/14_schemas.ipynb 13
 class UserLogin(BaseModel):

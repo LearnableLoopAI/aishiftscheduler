@@ -54,6 +54,18 @@ from .database import engine
 import aishiftscheduler.schemas as sch
 
 import aishiftscheduler.routers as rts
+import aishiftscheduler.envconfig as envcfg
+
+# from pydantic import BaseSettings
+# from pydantic_settings import BaseSettings
+
+# class Settings(BaseSettings):
+#     database_password: str = "localhost"
+#     database_username: str = "postgres"
+#     secret_key: str = "123jklj902734789df"
+
+# settings = Settings()
+# print(settings.database_password)
 
 # %% ../nbs/10_production.ipynb 11
 def prepare_schedule(pars):
