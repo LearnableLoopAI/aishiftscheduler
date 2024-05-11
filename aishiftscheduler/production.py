@@ -304,7 +304,7 @@ app.add_middleware(
 
 # %% ../nbs/10_production.ipynb 17
 # pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-dbm.Base.metadata.create_all(bind=engine)
+## dbm.Base.metadata.create_all(bind=engine) ##not needed, now we use alembic 
 
 # %% ../nbs/10_production.ipynb 18
 app.include_router(rts.userinput_router)

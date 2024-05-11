@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['settings', 'Settings']
 
-# %% ../nbs/18_envconfig.ipynb 6
+# %% ../nbs/18_envconfig.ipynb 7
 # from jose import JWTError, jwt
 # from datetime import datetime, timedelta
 # import aishiftscheduler.schemas as sch
@@ -20,7 +20,7 @@ __all__ = ['settings', 'Settings']
 # # import aishiftscheduler.utils as utl
 # # from aishiftscheduler.database import get_db
 
-# %% ../nbs/18_envconfig.ipynb 7
+# %% ../nbs/18_envconfig.ipynb 8
 # from pydantic import BaseSettings
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
