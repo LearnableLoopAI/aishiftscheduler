@@ -1,5 +1,5 @@
-#aiosignal==1.3.1 #had to remove the -e due to complaint when pushing about secrets; may want to run pip freeze > requirements.txt again
-#-e git+https://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@github.com/LearnableLoopAI/aishiftscheduler.git@a907478ab34ce7306101d0d291af8f9aff64be00#egg=aishiftscheduler
+aiosignal==1.3.1
+-e git+https://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@github.com/LearnableLoopAI/aishiftscheduler.git@a907478ab34ce7306101d0d291af8f9aff64be00#egg=aishiftscheduler
 alembic==1.13.1
 annotated-types==0.6.0
 anyio==4.3.0
@@ -33,7 +33,7 @@ ghapi==1.0.4
 greenlet==3.0.3
 h11==0.14.0
 idna==3.6
-ipykernel==6.29. 
+ipykernel==6.29.3
 ipython==8.22.1
 ipywidgets==8.0.4
 jedi==0.19.1
