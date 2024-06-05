@@ -314,7 +314,7 @@ app.include_router(rts.auth_router)
 # %% ../nbs/10_production.ipynb 18
 @app.get("/")
 def root():
-    return "BusinessN AI Scheduler API v1.0.0"
+    return "BusinessN AI Schedule Agent (API) v1.0.0"
 
 # %% ../nbs/10_production.ipynb 19
 dui = sch.UserInputBase(
