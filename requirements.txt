@@ -30,6 +30,7 @@ fonttools==4.49.0
 frozenlist==1.4.1
 ghapi==1.0.4
 greenlet==3.0.3
+gunicorn==22.0.0
 h11==0.14.0
 idna==3.6
 ipykernel==6.29.3
