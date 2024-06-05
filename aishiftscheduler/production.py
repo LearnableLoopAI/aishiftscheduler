@@ -285,12 +285,12 @@ def update_parameters_from_user_input(pars, user_input):
   pars.LABELS = pars.setup_plot_labels()
   return error
 
-# %% ../nbs/10_production.ipynb 14
+# %% ../nbs/10_production.ipynb 13
 # class ParamConfig():#will be copy of Parameters class
 # class UserInput():
 #     pass
 
-# %% ../nbs/10_production.ipynb 16
+# %% ../nbs/10_production.ipynb 15
 app = FastAPI()
 
 ## allow all origins
@@ -302,21 +302,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# %% ../nbs/10_production.ipynb 17
+# %% ../nbs/10_production.ipynb 16
 # pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ## dbm.Base.metadata.create_all(bind=engine) ##not needed, now we use alembic 
 
-# %% ../nbs/10_production.ipynb 18
+# %% ../nbs/10_production.ipynb 17
 app.include_router(rts.userinput_router)
 app.include_router(rts.user_router)
 app.include_router(rts.auth_router)
 
-# %% ../nbs/10_production.ipynb 19
+# %% ../nbs/10_production.ipynb 18
 @app.get("/")
 def root():
     return "BusinessN AI Scheduler API v1.0.0"
 
-# %% ../nbs/10_production.ipynb 20
+# %% ../nbs/10_production.ipynb 19
 dui = sch.UserInputBase(
   start="2023-12-04", ##2023-12-11
   slots_per_day=24,
@@ -340,7 +340,7 @@ dui = sch.UserInputBase(
   resource_expenses="25.0, 20.0, 18.0",
 )
 
-# %% ../nbs/10_production.ipynb 21
+# %% ../nbs/10_production.ipynb 20
 @app.get("/defaultuserinput")
 def get_default_user_input():
     return {
@@ -354,12 +354,12 @@ def get_default_user_input():
         "resource_expenses": dui.resource_expenses
     }
 
-# %% ../nbs/10_production.ipynb 22
+# %% ../nbs/10_production.ipynb 21
 ## Create a Parameter instance & initialize with default pars.
 ## The `Pars` instance will be passed between various modules
 Pars = par.Parameters()
 
-# %% ../nbs/10_production.ipynb 23
+# %% ../nbs/10_production.ipynb 22
 @app.post("/schedule")
 def find_schedule(user_input: sch.UserInputBase):
     error = update_parameters_from_user_input(Pars, user_input)
